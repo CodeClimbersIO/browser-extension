@@ -1,5 +1,5 @@
-import { CODE_CLIMBER_API_URL, CODE_CLIMBER_URL } from '../constants';
 import browser from 'webextension-polyfill';
+import { CODE_CLIMBER_API_URL, CODE_CLIMBER_URL } from '../constants';
 
 /**
  * Logging
