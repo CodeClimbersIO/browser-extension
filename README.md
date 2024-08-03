@@ -1,8 +1,14 @@
-# chrome-wakatime
+# Code Climbers Browser Extension
 
 Automatic time tracking for stats about your website debugging, research, documentation, etc.
 
-Note: Activity from this Chrome extension will not display on leaderboards, so installing this extension may lower your rank.
+## Features
+
+- TODO
+
+## Prerequisites
+
+- Install the [Code Climber's CLI](https://github.com/CodeClimbersIO/cli/tree/main)
 
 ## Installation
 
@@ -14,64 +20,20 @@ Note: Activity from this Chrome extension will not display on leaderboards, so i
 
 [![Edge](https://wakatime.com/static/img/microsoft-extension.png)](https://microsoftedge.microsoft.com/addons/detail/wakatime/cdnpfnaadjmaplhghnlonephmabegadl)
 
-2. Login to [WakaTime](https://wakatime.com/).
+2. Add the [source](http://localhost:14400).
 
 3. Use Chrome like you normally do and your time will be tracked for you automatically.
 
-4. Visit https://wakatime.com to see your logged time.
+4. Visit [your dashboard](http://localhost:14400) to see your logged time.
 
-5. Use in conjunction with [other WakaTime plugins](https://wakatime.com/plugins).
+## Contributing 🚀
 
-## Screenshots
+Come help contribute to making it easier for coders to focus on doing what they love to do: Code!
 
-![SC open](./screenshots/sc_6-green.png)
+- [Contributing Guide](./docs/Contributing.md)
 
-![SC open](./screenshots/sc_6-open.png)
+## Licensing
 
-![Options SC](./screenshots/sc_8-options.png)
+This project is licensed under the MIT License.
 
-## Development instructions
-
-> For development purposes only.
-
-To get started, install NPM and Bower dependencies, and do an initial build with Gulp:
-
-```
-npm start
-```
-
-To build the extension once:
-
-```
-npm run gulp
-```
-
-To monitor changes:
-
-```
-npm run watch
-```
-
-Run tests:
-
-```
-npm test
-```
-
-Lint code _(Both JS and JSX)_:
-
-```
-jsxhint --jsx-only .
-```
-
-### Automatic code linting
-
-There is a precommit hook that lints the code before commiting the changes.
-
-### Troubleshooting
-
-Check for errors by inspecting the extension.
-
-![inspecting extension](./screenshots/wakatime-chrome-debug.gif)
-
-The extension is going through a refactor, the new build [instructions are here](./DEVELOPMENT.md)
+Forked from [wakatime/browser-wakatime](https://github.com/wakatime/browser-wakatime) on 2024-08-03
