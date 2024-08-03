@@ -1,5 +1,5 @@
 {
-  "name": "chrome-wakatime",
+  "name": "codeclimbers-extension",
   "private": true,
   "scripts": {
     "build": "clap build",
