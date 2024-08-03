@@ -1,7 +1,7 @@
 import { AnyAction, Dispatch } from '@reduxjs/toolkit';
 import { setApiKey, setLoggingEnabled, setTotalTimeLoggedToday } from '../reducers/configReducer';
 import config from '../config/config';
-import WakaTimeCore from '../core/WakaTimeCore';
+import CodeClimbersCore from '../core/CodeClimbersCore';
 import { setUser } from '../reducers/currentUser';
 import changeExtensionState from './changeExtensionState';
 
@@ -12,7 +12,7 @@ export const logUserIn = async (apiKey: string): Promise<void> => {
   }
 
   try {
-    await WakaTimeCore.checkAuth(apiKey);
+    await CodeClimbersCore.checkAuth(apiKey);
     const items = await browser.storage.sync.get({ loggingEnabled: config.loggingEnabled });
 
     if (items.loggingEnabled === true) {
@@ -35,7 +35,7 @@ export const fetchUserData = async (
     });
     apiKey = storage.apiKey as string;
     if (!apiKey) {
-      apiKey = await WakaTimeCore.fetchApiKey();
+      apiKey = await CodeClimbersCore.fetchApiKey();
       if (apiKey) {
         await browser.storage.sync.set({ apiKey });
       }
@@ -50,8 +50,8 @@ export const fetchUserData = async (
 
   try {
     const [data, totalTimeLoggedTodayResponse, items] = await Promise.all([
-      WakaTimeCore.checkAuth(apiKey),
-      WakaTimeCore.getTotalTimeLoggedToday(apiKey),
+      CodeClimbersCore.checkAuth(apiKey),
+      CodeClimbersCore.getTotalTimeLoggedToday(apiKey),
       browser.storage.sync.get({ loggingEnabled: config.loggingEnabled }),
     ]);
     dispatch(setUser(data));
@@ -65,7 +65,7 @@ export const fetchUserData = async (
     dispatch(setLoggingEnabled(items.loggingEnabled as boolean));
     dispatch(setTotalTimeLoggedToday(totalTimeLoggedTodayResponse.text));
 
-    await WakaTimeCore.recordHeartbeat();
+    await CodeClimbersCore.recordHeartbeat();
   } catch (err: unknown) {
     await changeExtensionState('notSignedIn');
   }

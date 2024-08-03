@@ -1,3 +1,4 @@
+import { CODE_CLIMBER_API_URL, CODE_CLIMBER_URL } from '../constants';
 import config from './config';
 
 jest.mock('webextension-polyfill', () => {
@@ -10,8 +11,9 @@ jest.mock('webextension-polyfill', () => {
   };
 });
 
-describe('wakatime config', () => {
+describe('codeclimber config', () => {
   it('snapshot of config', () => {
+    // eslint-disable-next-line
     expect(config).toMatchInlineSnapshot(`
       {
         "alert": {
@@ -25,7 +27,7 @@ describe('wakatime config', () => {
           },
         },
         "apiKey": "",
-        "apiUrl": "https://api.wakatime.com/api/v1",
+        "apiUrl": "${CODE_CLIMBER_API_URL}",
         "colors": {
           "allGood": "",
           "lightTheme": "white",
@@ -51,8 +53,8 @@ describe('wakatime config', () => {
         "loggingEnabled": true,
         "loggingStyle": "blacklist",
         "loggingType": "domain",
-        "logoutUserUrl": "https://wakatime.com/logout",
-        "name": "WakaTime",
+        "logoutUserUrl": "${CODE_CLIMBER_URL}/logout",
+        "name": "Code Climbers",
         "nonTrackableSites": [
           "chrome://",
           "about:",

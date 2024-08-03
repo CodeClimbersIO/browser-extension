@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { CODE_CLIMBER_URL } from '../constants';
 import { configLogout, setLoggingEnabled } from '../reducers/configReducer';
 import { userLogout } from '../reducers/currentUser';
 import { ReduxSelector } from '../types/store';
@@ -104,7 +105,7 @@ export default function MainList({
           <a
             target="_blank"
             rel="noreferrer"
-            href="https://wakatime.com/login"
+            href={`${CODE_CLIMBER_URL}/login`}
             className="list-group-item text-body-secondary"
           >
             <i className="fa fa-fw fa-sign-in me-2"></i>

@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill';
-import WakaTimeCore from './core/WakaTimeCore';
+import CodeClimbersCore from './core/CodeClimbersCore';
 import { PostHeartbeatMessage } from './types/heartbeats';
 
 // Add a listener to resolve alarms
@@ -11,7 +11,7 @@ browser.alarms.onAlarm.addListener(async (alarm) => {
     // Checks if the user is online and if there are cached heartbeats requests,
     // if so then procedd to send these payload to wakatime api
     if (navigator.onLine) {
-      await WakaTimeCore.sendCachedHeartbeatsRequest();
+      await CodeClimbersCore.sendCachedHeartbeatsRequest();
     }
   }
 });
@@ -24,7 +24,7 @@ browser.alarms.create('heartbeatAlarm', { periodInMinutes: 2 });
  */
 browser.tabs.onActivated.addListener(async () => {
   console.log('recording a heartbeat - active tab changed');
-  await WakaTimeCore.recordHeartbeat();
+  await CodeClimbersCore.recordHeartbeat();
 });
 
 /**
@@ -33,7 +33,7 @@ browser.tabs.onActivated.addListener(async () => {
 browser.windows.onFocusChanged.addListener(async (windowId) => {
   if (windowId != browser.windows.WINDOW_ID_NONE) {
     console.log('recording a heartbeat - active window changed');
-    await WakaTimeCore.recordHeartbeat();
+    await CodeClimbersCore.recordHeartbeat();
   }
 });
 
@@ -50,7 +50,7 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
     });
     // If tab updated is the same as active tab
     if (tabId == tabs[0]?.id) {
-      await WakaTimeCore.recordHeartbeat();
+      await CodeClimbersCore.recordHeartbeat();
     }
   }
 });
@@ -60,12 +60,12 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
  * https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API
  */
 self.addEventListener('activate', async () => {
-  await WakaTimeCore.createDB();
+  await CodeClimbersCore.createDB();
 });
 
 browser.runtime.onMessage.addListener(async (request: PostHeartbeatMessage) => {
   if (request.recordHeartbeat === true) {
-    await WakaTimeCore.recordHeartbeat(request.projectDetails);
+    await CodeClimbersCore.recordHeartbeat(request.projectDetails);
   }
 });
 

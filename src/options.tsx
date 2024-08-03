@@ -6,7 +6,7 @@ import Options from './components/Options';
 global.jQuery = require('jquery');
 require('bootstrap');
 
-const container = document.getElementById('wakatime-options');
+const container = document.getElementById('codeclimbers-options');
 const root = createRoot(container!);
 
 root.render(<Options />);

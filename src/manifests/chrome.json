@@ -1,8 +1,8 @@
 {
   "action": {
     "default_icon": {
-      "19": "graphics/wakatime-logo-19.png",
-      "38": "graphics/wakatime-logo-38.png"
+      "19": "graphics/codeclimbers-19.png",
+      "38": "graphics/codeclimbers-38.png"
     },
     "default_popup": "popup.html",
     "default_title": "WakaTime"
@@ -14,21 +14,21 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["wakatimeScript.js"],
+      "js": ["codeclimbersScript.js"],
       "run_at": "document_end"
     }
   ],
   "description": "Automatic time tracking for Chrome.",
   "devtools_page": "devtools.html",
-  "homepage_url": "https://wakatime.com",
-  "host_permissions": ["https://api.wakatime.com/*", "https://wakatime.com/*"],
+  "homepage_url": "http://localhost:14400",
+  "host_permissions": ["http://localhost:14400/*"],
   "icons": {
-    "16": "graphics/wakatime-logo-16.png",
-    "48": "graphics/wakatime-logo-48.png",
-    "128": "graphics/wakatime-logo-128.png"
+    "16": "graphics/codeclimbers-16.png",
+    "48": "graphics/codeclimbers-48.png",
+    "128": "graphics/codeclimbers-128.png"
   },
   "manifest_version": 3,
-  "name": "WakaTime",
+  "name": "Code Climbers",
   "options_ui": {
     "page": "options.html"
   },

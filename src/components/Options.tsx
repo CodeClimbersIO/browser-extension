@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import config, { SuccessOrFailType } from '../config/config';
 import apiKeyInvalid from '../utils/apiKey';
 import { logUserIn } from '../utils/user';
+import { CODE_CLIMBER_API_URL } from '../constants';
 import SitesList from './SitesList';
 
 interface State {
@@ -282,9 +283,9 @@ export default function Options(): JSX.Element {
                 className="form-control"
                 value={state.apiUrl}
                 onChange={(e) => setState({ ...state, apiUrl: e.target.value })}
-                placeholder="https://api.wakatime.com/api/v1"
+                placeholder={CODE_CLIMBER_API_URL}
               />
-              <span className="help-block">https://api.wakatime.com/api/v1</span>
+              <span className="help-block">{CODE_CLIMBER_API_URL}</span>
             </div>
 
             <div className="form-group row mb-4">

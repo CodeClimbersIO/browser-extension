@@ -1,5 +1,6 @@
 import React from 'react';
 import { renderWithProviders } from '../utils/test-utils';
+import { CODE_CLIMBER_URL, GITHUB_EXTENSION_URL } from '../constants';
 import NavBar from './NavBar';
 
 jest.mock('webextension-polyfill', () => {
@@ -15,6 +16,7 @@ jest.mock('webextension-polyfill', () => {
 describe('NavBar', () => {
   it('should render properly', () => {
     const { container } = renderWithProviders(<NavBar />);
+    // eslint-disable-next-line
     expect(container).toMatchInlineSnapshot(`
       <div>
         <nav
@@ -26,15 +28,15 @@ describe('NavBar', () => {
           >
             <a
               class="navbar-brand"
-              href="https://wakatime.com"
+              href="${CODE_CLIMBER_URL}"
               rel="noreferrer"
               target="_blank"
             >
               <img
-                src="graphics/wakatime-logo-48.png"
+                src="graphics/codeclimbers-38.png"
               />
               <div>
-                WakaTime
+                Code Climbers
               </div>
             </a>
             <button
@@ -93,7 +95,7 @@ describe('NavBar', () => {
                   >
                     <a
                       class="text-body-secondary link-underline link-underline-opacity-0 d-flex w-100 align-items-center"
-                      href="https://github.com/wakatime/chrome-wakatime/issues"
+                      href="${GITHUB_EXTENSION_URL}/issues"
                       rel="noreferrer"
                       target="_blank"
                     >
@@ -108,7 +110,7 @@ describe('NavBar', () => {
                   >
                     <a
                       class="text-body-secondary link-underline link-underline-opacity-0 d-flex w-100 align-items-center"
-                      href="https://github.com/wakatime/chrome-wakatime"
+                      href="${GITHUB_EXTENSION_URL}"
                       rel="noreferrer"
                       target="_blank"
                     >

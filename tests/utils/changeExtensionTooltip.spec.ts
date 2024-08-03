@@ -19,8 +19,8 @@ describe('changeExtensionTooltip', function () {
   });
 
   // it('should change the extension tooltip', function() {
-  //     changeExtensionTooltip('WakaTime');
-  //     expect(chrome.browserAction.setTitle).toHaveBeenCalledWith({title: 'Wakatime'});
-  //     sinon.assert.calledWithMatch(chrome.browserAction.setTitle, {title: 'WakaTime'});
+  //     changeExtensionTooltip('Code Climbers');
+  //     expect(chrome.browserAction.setTitle).toHaveBeenCalledWith({title: 'Code Climbers'});
+  //     sinon.assert.calledWithMatch(chrome.browserAction.setTitle, {title: 'Code Climbers'});
   // });
 });

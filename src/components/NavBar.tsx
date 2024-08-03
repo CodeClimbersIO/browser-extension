@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { ReduxSelector } from '../types/store';
 import { User } from '../types/user';
+import { CODE_CLIMBER_URL, GITHUB_EXTENSION_URL } from '../constants';
 
 export default function NavBar(): JSX.Element {
   const user: User | undefined = useSelector(
@@ -26,7 +27,7 @@ export default function NavBar(): JSX.Element {
         <li className="mb-2">
           <a
             target="_blank"
-            href="https://wakatime.com/settings/rules"
+            href={`${CODE_CLIMBER_URL}/settings/rules`}
             rel="noreferrer"
             className="text-body-secondary link-underline link-underline-opacity-0 d-flex w-100 align-items-center"
           >
@@ -46,7 +47,7 @@ export default function NavBar(): JSX.Element {
         <li className="mb-2">
           <a
             target="_blank"
-            href="https://wakatime.com/dashboard"
+            href={`${CODE_CLIMBER_URL}/dashboard`}
             rel="noreferrer"
             className="text-body-secondary link-underline link-underline-opacity-0 d-flex w-100 align-items-center"
           >
@@ -63,9 +64,9 @@ export default function NavBar(): JSX.Element {
   return (
     <nav className="navbar shadow-none" role="navigation">
       <div className="navbar-header d-flex w-100 justify-content-between">
-        <a target="_blank" className="navbar-brand" href="https://wakatime.com" rel="noreferrer">
-          <img src="graphics/wakatime-logo-48.png" />
-          <div>WakaTime</div>
+        <a target="_blank" className="navbar-brand" href={CODE_CLIMBER_URL} rel="noreferrer">
+          <img src="graphics/codeclimbers-38.png" />
+          <div>Code Climbers</div>
         </a>
         <button
           className="navbar-toggler"
@@ -102,7 +103,7 @@ export default function NavBar(): JSX.Element {
               <li className="mb-2">
                 <a
                   target="_blank"
-                  href="https://github.com/wakatime/chrome-wakatime/issues"
+                  href={`${GITHUB_EXTENSION_URL}/issues`}
                   rel="noreferrer"
                   className="text-body-secondary link-underline link-underline-opacity-0 d-flex w-100 align-items-center"
                 >
@@ -113,7 +114,7 @@ export default function NavBar(): JSX.Element {
               <li className="mb-2">
                 <a
                   target="_blank"
-                  href="https://github.com/wakatime/chrome-wakatime"
+                  href={GITHUB_EXTENSION_URL}
                   rel="noreferrer"
                   className="text-body-secondary link-underline link-underline-opacity-0 d-flex w-100 align-items-center"
                 >

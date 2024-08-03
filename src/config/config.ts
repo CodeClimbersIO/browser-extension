@@ -1,3 +1,4 @@
+import { CODE_CLIMBER_API_URL, CODE_CLIMBER_URL } from '../constants';
 import browser from 'webextension-polyfill';
 
 /**
@@ -50,7 +51,7 @@ interface Tooltips {
 export interface Config {
   alert: Alert;
   /**
-   * API key use to query wakatime  api
+   * API key use to query code climbers  api
    */
   apiKey: '';
   apiUrl: string;
@@ -80,7 +81,7 @@ export interface Config {
   loggingStyle: LoggingStyle;
   loggingType: LoggingType;
   /**
-   * Url to logout out of wakatime
+   * Url to logout out of code climbers
    */
   logoutUserUrl: string;
   /**
@@ -91,7 +92,7 @@ export interface Config {
   socialMediaSites: string[];
   states: ApiStates[];
   /**
-   * Get stats from the wakatime api
+   * Get stats from the code climbers api
    */
   summariesApiEndPoint: string;
   /**
@@ -120,7 +121,7 @@ const config: Config = {
 
   apiKey: '',
 
-  apiUrl: process.env.API_URL ?? 'https://api.wakatime.com/api/v1',
+  apiUrl: process.env.API_URL ?? CODE_CLIMBER_API_URL,
 
   colors: {
     allGood: '',
@@ -156,9 +157,9 @@ const config: Config = {
 
   loggingType: 'domain',
 
-  logoutUserUrl: process.env.LOGOUT_USER_URL ?? 'https://wakatime.com/logout',
+  logoutUserUrl: process.env.LOGOUT_USER_URL ?? `${CODE_CLIMBER_URL}/logout`,
 
-  name: 'WakaTime',
+  name: 'Code Climbers',
 
   nonTrackableSites: ['chrome://', 'about:'],
 

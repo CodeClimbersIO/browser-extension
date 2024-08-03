@@ -1,5 +1,6 @@
 import React from 'react';
 import { renderWithProviders } from '../utils/test-utils';
+import { CODE_CLIMBER_URL } from '../constants';
 import MainList from './MainList';
 
 jest.mock('webextension-polyfill', () => {
@@ -23,6 +24,7 @@ describe('MainList', () => {
     const { container } = renderWithProviders(
       <MainList loggingEnabled={loggingEnabled} totalTimeLoggedToday={totalTimeLoggedToday} />,
     );
+    // eslint-disable-next-line
     expect(container).toMatchInlineSnapshot(`
       <div>
         <div>
@@ -40,7 +42,7 @@ describe('MainList', () => {
             </a>
             <a
               class="list-group-item text-body-secondary"
-              href="https://wakatime.com/login"
+              href="${CODE_CLIMBER_URL}/login"
               rel="noreferrer"
               target="_blank"
             >

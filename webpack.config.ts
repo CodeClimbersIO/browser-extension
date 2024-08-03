@@ -3,6 +3,7 @@ import { join } from 'path';
 import * as webpack from 'webpack';
 // eslint-disable-next-line
 import CopyPlugin from 'copy-webpack-plugin';
+import { CODE_CLIMBER_API_URL, CODE_CLIMBER_URL } from './src/constants';
 
 type BrowserTypes = 'chrome' | 'firefox' | 'edge';
 
@@ -22,10 +23,10 @@ const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Con
     devtool: 'source-map',
     entry: {
       background: [join(srcFolder, 'background.ts')],
+      codeclimbersScript: [join(srcFolder, 'codeclimbersScript.ts')],
       devtools: [join(srcFolder, 'devtools.ts')],
       options: [join(srcFolder, 'options.tsx')],
       popup: [join(srcFolder, 'popup.tsx')],
-      wakatimeScript: [join(srcFolder, 'wakatimeScript.ts')],
     },
     // mode: isProd ? 'production' : 'development',
     module: {
@@ -56,10 +57,11 @@ const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Con
         ],
       }),
       new webpack.DefinePlugin({
-        ['process.env.API_URL']: JSON.stringify('https://api.wakatime.com/api/v1'),
+        ['process.env.API_URL']: JSON.stringify(CODE_CLIMBER_API_URL),
+        ['process.env.CODECLIMBERS_URL']: JSON.stringify(CODE_CLIMBER_URL),
         ['process.env.CURRENT_USER_API_URL']: JSON.stringify('/users/current'),
         ['process.env.HEARTBEAT_API_URL']: JSON.stringify('/users/current/heartbeats'),
-        ['process.env.LOGOUT_USER_URL']: JSON.stringify('https://wakatime.com/logout'),
+        ['process.env.LOGOUT_USER_URL']: JSON.stringify(`${CODE_CLIMBER_URL}/logout`),
         ['process.env.NODE_ENV']: JSON.stringify(isProd ? 'production' : 'development'),
         ['process.env.SUMMARIES_API_URL']: JSON.stringify('/users/current/summaries'),
       }),

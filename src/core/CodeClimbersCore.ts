@@ -14,7 +14,7 @@ import changeExtensionState from '../utils/changeExtensionState';
 import contains from '../utils/contains';
 import getDomainFromUrl, { getDomain } from '../utils/getDomainFromUrl';
 
-class WakaTimeCore {
+class CodeClimbersCore {
   tabsWithDevtoolsOpen: Tabs.Tab[];
   db: IDBPDatabase | undefined;
   constructor() {
@@ -26,7 +26,7 @@ class WakaTimeCore {
    * a library that adds promises to IndexedDB and makes it easy to use
    */
   async createDB() {
-    const dbConnection = await openDB('wakatime', 1, {
+    const dbConnection = await openDB('codeclimbers', 1, {
       upgrade(db, oldVersion) {
         // Create a store of objects
         const store = db.createObjectStore('cacheHeartbeats', {
@@ -71,7 +71,7 @@ class WakaTimeCore {
   }
 
   /**
-   * Fetches the api token for logged users in wakatime website
+   * Fetches the api token for logged users in code climbers website
    *
    * @returns {*}
    */
@@ -110,7 +110,7 @@ class WakaTimeCore {
 
   /**
    * Depending on various factors detects the current active tab URL or domain,
-   * and sends it to WakaTime for logging.
+   * and sends it to Code Climbers for logging.
    */
   async recordHeartbeat(payload = {}): Promise<void> {
     const apiKey = await getApiKey();
@@ -350,7 +350,7 @@ class WakaTimeCore {
       entity: heartbeat.url,
       time: moment().format('X'),
       type: type,
-      user_agent: `${userAgent} ${os} ${browserName}-wakatime/${config.version}`,
+      user_agent: `${userAgent} ${os} ${browserName}-code_climbers/${config.version}`,
     };
 
     payload.project = heartbeat.project ?? '<<LAST_PROJECT>>';
@@ -410,7 +410,7 @@ class WakaTimeCore {
   }
 
   /**
-   * Sends cached heartbeats request to wakatime api
+   * Sends cached heartbeats request to code climbers api
    * @param requests
    */
   async sendCachedHeartbeatsRequest(): Promise<void> {
@@ -439,4 +439,4 @@ class WakaTimeCore {
   }
 }
 
-export default new WakaTimeCore();
+export default new CodeClimbersCore();
