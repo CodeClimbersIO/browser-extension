@@ -1,11 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import config from '../config/config';
-import { ApiKeyReducer } from '../types/store';
-
-interface SetApiKeyAction {
-  payload: string;
-  type: string;
-}
+import { ConfigReducer } from '../types/store';
 
 interface SetLoggingEnabledAction {
   payload: boolean;
@@ -22,25 +17,16 @@ interface SetThemeAction {
   type: string;
 }
 
-export const initialConfigState: ApiKeyReducer = {
-  apiKey: '',
+export const initialConfigState: ConfigReducer = {
   loggingEnabled: config.loggingEnabled,
   totalTimeLoggedToday: '0 minutes',
   theme: 'light',
 };
 
-const apiKeySlice = createSlice({
+const configSlice = createSlice({
   initialState: initialConfigState,
   name: 'configReducer',
   reducers: {
-    configLogout: (state) => {
-      state.apiKey = '';
-      state.loggingEnabled = config.loggingEnabled;
-      state.totalTimeLoggedToday = '0 minutes';
-    },
-    setApiKey: (state, action: SetApiKeyAction) => {
-      state.apiKey = action.payload;
-    },
     setLoggingEnabled: (state, action: SetLoggingEnabledAction) => {
       state.loggingEnabled = action.payload;
     },
@@ -53,7 +39,6 @@ const apiKeySlice = createSlice({
   },
 });
 
-export const actions = apiKeySlice.actions;
-export const { configLogout, setApiKey, setLoggingEnabled, setTotalTimeLoggedToday, setTheme } =
-  apiKeySlice.actions;
-export default apiKeySlice.reducer;
+export const actions = configSlice.actions;
+export const { setLoggingEnabled, setTotalTimeLoggedToday, setTheme } = configSlice.actions;
+export default configSlice.reducer;

@@ -7,9 +7,7 @@ import browser, { Tabs } from 'webextension-polyfill';
 import config from '../config/config';
 import { SendHeartbeat } from '../types/heartbeats';
 import { GrandTotal, SummariesPayload } from '../types/summaries';
-import { ApiKeyPayload, AxiosUserResponse, User } from '../types/user';
 import { IS_FIREFOX, IS_EDGE, generateProjectFromDevSites } from '../utils';
-import { getApiKey } from '../utils/apiKey';
 import changeExtensionState from '../utils/changeExtensionState';
 import contains from '../utils/contains';
 import getDomainFromUrl, { getDomain } from '../utils/getDomainFromUrl';
@@ -50,7 +48,7 @@ class CodeClimbersCore {
     this.tabsWithDevtoolsOpen = tabs;
   }
 
-  async getTotalTimeLoggedToday(api_key = ''): Promise<GrandTotal> {
+  async getTotalTimeLoggedToday(): Promise<GrandTotal> {
     const items = await browser.storage.sync.get({
       apiUrl: config.apiUrl,
       summariesApiEndPoint: config.summariesApiEndPoint,
@@ -61,7 +59,6 @@ class CodeClimbersCore {
       `${items.apiUrl}${items.summariesApiEndPoint}`,
       {
         params: {
-          api_key,
           end: today,
           start: today,
         },
@@ -71,52 +68,10 @@ class CodeClimbersCore {
   }
 
   /**
-   * Fetches the api token for logged users in code climbers website
-   *
-   * @returns {*}
-   */
-  async fetchApiKey(): Promise<string> {
-    try {
-      const items = await browser.storage.sync.get({
-        apiUrl: config.apiUrl,
-        currentUserApiEndPoint: config.currentUserApiEndPoint,
-      });
-
-      const apiKeyResponse: AxiosResponse<ApiKeyPayload> = await axios.post(
-        `${items.apiUrl}${items.currentUserApiEndPoint}/get_api_key`,
-      );
-      return apiKeyResponse.data.data.api_key;
-    } catch (err: unknown) {
-      return '';
-    }
-  }
-
-  /**
-   * Checks if the user is logged in.
-   *
-   * @returns {*}
-   */
-  async checkAuth(api_key = ''): Promise<User> {
-    const items = await browser.storage.sync.get({
-      apiUrl: config.apiUrl,
-      currentUserApiEndPoint: config.currentUserApiEndPoint,
-    });
-    const userPayload: AxiosResponse<AxiosUserResponse> = await axios.get(
-      `${items.apiUrl}${items.currentUserApiEndPoint}`,
-      { params: { api_key } },
-    );
-    return userPayload.data.data;
-  }
-
-  /**
    * Depending on various factors detects the current active tab URL or domain,
    * and sends it to Code Climbers for logging.
    */
   async recordHeartbeat(payload = {}): Promise<void> {
-    const apiKey = await getApiKey();
-    if (!apiKey) {
-      return changeExtensionState('notLogging');
-    }
     const items = await browser.storage.sync.get({
       blacklist: '',
       hostname: config.hostname,
@@ -126,6 +81,7 @@ class CodeClimbersCore {
       trackSocialMedia: config.trackSocialMedia,
       whitelist: '',
     });
+
     if (items.loggingEnabled === true) {
       await changeExtensionState('allGood');
 
@@ -174,7 +130,6 @@ class CodeClimbersCore {
               project,
               url,
             },
-            apiKey,
             payload,
           );
         } else {
@@ -192,7 +147,6 @@ class CodeClimbersCore {
               hostname: items.hostname as string,
               project: heartbeat.project ?? project,
             },
-            apiKey,
             payload,
           );
         } else {
@@ -282,7 +236,6 @@ class CodeClimbersCore {
    */
   async sendHeartbeat(
     heartbeat: SendHeartbeat,
-    apiKey: string,
     navigationPayload: Record<string, unknown>,
   ): Promise<void> {
     let payload;
@@ -293,20 +246,12 @@ class CodeClimbersCore {
     if (loggingType == 'domain') {
       heartbeat.url = getDomainFromUrl(heartbeat.url);
       payload = await this.preparePayload(heartbeat, 'domain');
-      await this.sendPostRequestToApi(
-        { ...payload, ...navigationPayload },
-        apiKey,
-        heartbeat.hostname,
-      );
+      await this.sendPostRequestToApi({ ...payload, ...navigationPayload }, heartbeat.hostname);
     }
     // Send entity in heartbeat
     else if (loggingType == 'url') {
       payload = await this.preparePayload(heartbeat, 'url');
-      await this.sendPostRequestToApi(
-        { ...payload, ...navigationPayload },
-        apiKey,
-        heartbeat.hostname,
-      );
+      await this.sendPostRequestToApi({ ...payload, ...navigationPayload }, heartbeat.hostname);
     }
   }
 
@@ -374,11 +319,7 @@ class CodeClimbersCore {
    * @param method
    * @returns {*}
    */
-  async sendPostRequestToApi(
-    payload: Record<string, unknown>,
-    apiKey = '',
-    hostname = '',
-  ): Promise<void> {
+  async sendPostRequestToApi(payload: Record<string, unknown>, hostname = ''): Promise<void> {
     try {
       const items = await browser.storage.sync.get({
         apiUrl: config.apiUrl,
@@ -395,10 +336,7 @@ class CodeClimbersCore {
           'X-Machine-Name': hostname,
         };
       }
-      const response = await fetch(
-        `${items.apiUrl}${items.heartbeatApiEndPoint}?api_key=${apiKey}`,
-        request,
-      );
+      const response = await fetch(`${items.apiUrl}${items.heartbeatApiEndPoint}`, request);
       await response.json();
     } catch (err: unknown) {
       if (this.db) {
@@ -414,11 +352,6 @@ class CodeClimbersCore {
    * @param requests
    */
   async sendCachedHeartbeatsRequest(): Promise<void> {
-    const apiKey = await getApiKey();
-    if (!apiKey) {
-      return changeExtensionState('notLogging');
-    }
-
     if (this.db) {
       const requests = await this.db.getAll('cacheHeartbeats');
       await this.db.clear('cacheHeartbeats');
@@ -427,7 +360,7 @@ class CodeClimbersCore {
         const chunk = requests.slice(i, i + chunkSize);
         const requestsPromises: Promise<void>[] = [];
         chunk.forEach((request: Record<string, unknown>) =>
-          requestsPromises.push(this.sendPostRequestToApi(request, apiKey)),
+          requestsPromises.push(this.sendPostRequestToApi(request)),
         );
         try {
           await Promise.all(requestsPromises);

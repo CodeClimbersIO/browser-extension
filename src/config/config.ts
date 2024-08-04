@@ -54,7 +54,6 @@ export interface Config {
   /**
    * API key use to query code climbers  api
    */
-  apiKey: '';
   apiUrl: string;
   colors: Colors;
   /**
@@ -81,10 +80,6 @@ export interface Config {
   loggingEnabled: boolean;
   loggingStyle: LoggingStyle;
   loggingType: LoggingType;
-  /**
-   * Url to logout out of code climbers
-   */
-  logoutUserUrl: string;
   /**
    * Extension name
    */
@@ -119,8 +114,6 @@ const config: Config = {
       type: 'success',
     },
   },
-
-  apiKey: '',
 
   apiUrl: process.env.API_URL ?? CODE_CLIMBER_API_URL,
 
@@ -157,8 +150,6 @@ const config: Config = {
   loggingStyle: 'blacklist',
 
   loggingType: 'domain',
-
-  logoutUserUrl: process.env.LOGOUT_USER_URL ?? `${CODE_CLIMBER_URL}/logout`,
 
   name: 'Code Climbers',
 

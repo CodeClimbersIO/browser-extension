@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
   Menu,
   MenuList,
@@ -12,7 +11,6 @@ import {
 } from '@mui/material';
 import {
   BugReport,
-  Close,
   Dashboard,
   ExpandLess,
   ExpandMore,
@@ -23,38 +21,9 @@ import {
 } from '@mui/icons-material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 
-import { ReduxSelector } from '../types/store';
-import { User } from '../types/user';
-import { CODE_CLIMBER_URL, GITHUB_EXTENSION_URL } from '../constants';
+import { CODE_CLIMBER_URL, GITHUB_EXTENSION_URL } from '../../constants';
 
-const CustomRulesItem = () => (
-  <MenuItem
-    component="a"
-    target="_blank"
-    href={`${CODE_CLIMBER_URL}/settings/rules`}
-    rel="noreferrer"
-  >
-    <ListItemIcon>
-      <SettingsInputComponent />
-    </ListItemIcon>
-    <ListItemText primary="Custom Rules" />
-  </MenuItem>
-);
-
-const DashboardItem = () => (
-  <MenuItem component="a" target="_blank" href={`${CODE_CLIMBER_URL}/dashboard`} rel="noreferrer">
-    <ListItemIcon>
-      <Dashboard />
-    </ListItemIcon>
-    <ListItemText primary="Dashboard" />
-  </MenuItem>
-);
-
-export default function NavBar(): JSX.Element {
-  const user: User | undefined = useSelector(
-    (selector: ReduxSelector) => selector.currentUser.user,
-  );
-
+export const PopupHeader = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openInfo, setOpenInfo] = useState(false);
 
@@ -96,21 +65,28 @@ export default function NavBar(): JSX.Element {
       </Grid2>
 
       <Menu open={open} anchorEl={anchorEl} onClose={handleClose}>
-        {!!user && (
-          <MenuItem disabled>
-            <ListItemText primary={user.full_name}>
-              <IconButton onClick={handleClose}>
-                <Close />
-              </IconButton>
-            </ListItemText>
-          </MenuItem>
-        )}
-        {!!user && (
-          <>
-            <CustomRulesItem />
-            <DashboardItem />
-          </>
-        )}
+        <MenuItem
+          component="a"
+          target="_blank"
+          href={`${CODE_CLIMBER_URL}/settings/rules`}
+          rel="noreferrer"
+        >
+          <ListItemIcon>
+            <SettingsInputComponent />
+          </ListItemIcon>
+          <ListItemText primary="Custom Rules" />
+        </MenuItem>
+        <MenuItem
+          component="a"
+          target="_blank"
+          href={`${CODE_CLIMBER_URL}/dashboard`}
+          rel="noreferrer"
+        >
+          <ListItemIcon>
+            <Dashboard />
+          </ListItemIcon>
+          <ListItemText primary="Dashboard" />
+        </MenuItem>
         <MenuItem onClick={() => setOpenInfo((o) => !o)}>
           <ListItemIcon>
             <Info />
@@ -147,4 +123,4 @@ export default function NavBar(): JSX.Element {
       </Menu>
     </nav>
   );
-}
+};

@@ -23,10 +23,10 @@ const chromeNextBuildFolder = join(nextBuildFolder, 'chrome');
 const filesNeededForNextBuild = [
   'manifest.json',
   'background.js',
-  'options.js',
   'options.html',
-  'popup.js',
   'popup.html',
+  'options.js',
+  'popup.js',
   'public/js/browser-polyfill.min.js',
   'graphics/codeclimbers-16.png',
   'codeclimbersScript.js',

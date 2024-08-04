@@ -1,13 +1,7 @@
 import React from 'react';
-import {
-  createTheme,
-  ThemeProvider as MuiThemeProvider,
-  Palette,
-  PaletteOptions,
-  Theme,
-} from '@mui/material';
+import { createTheme, ThemeProvider as MuiThemeProvider, PaletteOptions } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { ApiKeyReducer, ReduxSelector } from '../types/store';
+import { ConfigReducer, ReduxSelector } from '../types/store';
 
 // Needs to be kept in sync with CodeClimbers/cli/packages/app theme
 const palette: PaletteOptions = {};
@@ -26,7 +20,7 @@ const darkTheme = createTheme({
   },
 });
 
-const getTheme = (theme: ApiKeyReducer['theme']) => {
+const getTheme = (theme: ConfigReducer['theme']) => {
   return theme === 'light' ? lightTheme : darkTheme;
 };
 
@@ -35,7 +29,7 @@ type ThemeProviderProps = {
 };
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-  const { theme }: ApiKeyReducer = useSelector((selector: ReduxSelector) => selector.config);
+  const { theme }: ConfigReducer = useSelector((selector: ReduxSelector) => selector.config);
 
   console.log({ theme });
 
@@ -43,7 +37,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 };
 
 type NoReduxThemeProviderProps = ThemeProviderProps & {
-  theme: ApiKeyReducer['theme'];
+  theme: ConfigReducer['theme'];
 };
 
 export const NoReduxThemeProvider = ({ children, theme }: NoReduxThemeProviderProps) => (
