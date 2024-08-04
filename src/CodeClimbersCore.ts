@@ -55,7 +55,7 @@ class CodeClimbersCore {
   }
 
   async getTotalTimeLoggedToday(): Promise<GrandTotal> {
-    const env = getEnv();
+    const env = getEnv()
 
     const items = await browser.storage.sync.get({
       apiUrl: env.apiUrl,
