@@ -26,7 +26,6 @@ describe('codeclimber config', () => {
             "type": "success",
           },
         },
-        "apiKey": "",
         "apiUrl": "${CODE_CLIMBER_API_URL}",
         "colors": {
           "allGood": "",
@@ -53,7 +52,6 @@ describe('codeclimber config', () => {
         "loggingEnabled": true,
         "loggingStyle": "blacklist",
         "loggingType": "domain",
-        "logoutUserUrl": "${CODE_CLIMBER_URL}/logout",
         "name": "Code Climbers",
         "nonTrackableSites": [
           "chrome://",

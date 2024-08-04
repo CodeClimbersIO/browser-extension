@@ -22,8 +22,8 @@ const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Con
       background: [join(srcFolder, 'background.ts')],
       codeclimbersScript: [join(srcFolder, 'codeclimbersScript.ts')],
       devtools: [join(srcFolder, 'devtools.ts')],
-      options: [join(srcFolder, 'options.tsx')],
-      popup: [join(srcFolder, 'popup.tsx')],
+      options: [join(srcFolder, './routes/options.tsx')],
+      popup: [join(srcFolder, './routes/popup.tsx')],
     },
     // mode: isProd ? 'production' : 'development',
     module: {
@@ -56,7 +56,6 @@ const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Con
         ['process.env.CODECLIMBERS_URL']: JSON.stringify(CODE_CLIMBER_URL),
         ['process.env.CURRENT_USER_API_URL']: JSON.stringify('/users/current'),
         ['process.env.HEARTBEAT_API_URL']: JSON.stringify('/users/current/heartbeats'),
-        ['process.env.LOGOUT_USER_URL']: JSON.stringify(`${CODE_CLIMBER_URL}/logout`),
         ['process.env.NODE_ENV']: JSON.stringify(isProd ? 'production' : 'development'),
         ['process.env.SUMMARIES_API_URL']: JSON.stringify('/users/current/summaries'),
       }),

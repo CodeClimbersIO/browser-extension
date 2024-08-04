@@ -47,17 +47,3 @@ export interface User {
   weekday_start: number;
   writes_only: boolean;
 }
-
-export interface CurrentUser {
-  error?: unknown;
-  pending?: boolean;
-  user?: User;
-}
-
-export interface ApiKeyPayload {
-  data: ApiKey;
-}
-
-export interface ApiKey {
-  api_key: string;
-}

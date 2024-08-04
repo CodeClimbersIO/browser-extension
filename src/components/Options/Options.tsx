@@ -16,22 +16,18 @@ import {
 import { Save } from '@mui/icons-material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 
-import { NoReduxThemeProvider } from '../stores/ThemeProvider';
-import config, { SuccessOrFailType } from '../config/config';
-import apiKeyInvalid from '../utils/apiKey';
-import { logUserIn } from '../utils/user';
-import { CODE_CLIMBER_API_URL } from '../constants';
-import SitesListInput from './SitesListInput';
+import { NoReduxThemeProvider } from '../../stores/ThemeProvider';
+import config, { SuccessOrFailType } from '../../config/config';
+import { CODE_CLIMBER_API_URL } from '../../constants';
 
 interface State {
   alertText: string;
   alertType: SuccessOrFailType;
-  apiKey: string;
   apiUrl: string;
   blacklist: string;
   hostname: string;
   loading: boolean;
-  loggingStyle: string;
+  loggingStyle: 'blacklist' | 'whitelist';
   loggingType: string;
   socialMediaSites: string[];
   theme: 'light' | 'dark';
@@ -45,12 +41,11 @@ const FormDivider = () => (
   </Grid2>
 );
 
-export default function Options(): JSX.Element {
+export const Options = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [state, setState] = useState<State>({
     alertText: config.alert.success.text,
     alertType: config.alert.success.type,
-    apiKey: '',
     apiUrl: config.apiUrl,
     blacklist: '',
     hostname: '',
@@ -65,7 +60,6 @@ export default function Options(): JSX.Element {
 
   const restoreSettings = async (): Promise<void> => {
     const items = await browser.storage.sync.get({
-      apiKey: config.apiKey,
       apiUrl: config.apiUrl,
       blacklist: '',
       hostname: config.hostname,
@@ -87,11 +81,10 @@ export default function Options(): JSX.Element {
 
     setState({
       ...state,
-      apiKey: items.apiKey as string,
       apiUrl: items.apiUrl as string,
       blacklist: items.blacklist as string,
       hostname: items.hostname as string,
-      loggingStyle: items.loggingStyle as string,
+      loggingStyle: items.loggingStyle as typeof state.loggingStyle,
       loggingType: items.loggingType as string,
       socialMediaSites: items.socialMediaSites as string[],
       theme: items.theme as typeof config.theme,
@@ -108,7 +101,6 @@ export default function Options(): JSX.Element {
     if (state.loading) return;
     setState({ ...state, loading: true });
 
-    const apiKey = state.apiKey;
     const theme = state.theme;
     const hostname = state.hostname;
     const loggingType = state.loggingType;
@@ -125,7 +117,6 @@ export default function Options(): JSX.Element {
     }
 
     await browser.storage.sync.set({
-      apiKey,
       apiUrl,
       blacklist,
       hostname,
@@ -144,28 +135,11 @@ export default function Options(): JSX.Element {
       apiUrl,
     }));
     setShowAlert(true);
-    await logUserIn(state.apiKey);
-  };
-
-  const updateBlacklistState = (sites: string) => {
-    setState({
-      ...state,
-      blacklist: sites,
-    });
-  };
-
-  const updateWhitelistState = (sites: string) => {
-    setState({
-      ...state,
-      whitelist: sites,
-    });
   };
 
   // const toggleSocialMedia = () => {
   //   setState({ ...state, trackSocialMedia: !state.trackSocialMedia });
   // };
-
-  const isApiKeyValid = apiKeyInvalid(state.apiKey) === '';
 
   const updateState = <Key extends keyof typeof state>(key: Key, value: (typeof state)[Key]) =>
     setState({ ...state, [key]: value });
@@ -248,48 +222,34 @@ export default function Options(): JSX.Element {
             </Grid2>
           </Grid2>
           <FormDivider />
-          <Grid2 container flexDirection="column" spacing={2}>
-            <Grid2>
-              <TextField
-                autoFocus
-                id="apiKey"
-                label="API Key"
-                value={state.apiKey}
-                onChange={(e) => updateState('apiKey', e.currentTarget.value)}
-                error={!isApiKeyValid}
-                fullWidth
-              />
-            </Grid2>
-            <Grid2>
-              <TextField
-                fullWidth
-                label="API URL"
-                id="api-url"
-                onChange={(e) => updateState('apiUrl', e.currentTarget.value)}
-                value={state.apiUrl}
-                placeholder={CODE_CLIMBER_API_URL}
-                helperText={CODE_CLIMBER_API_URL}
-              />
-            </Grid2>
+          <Grid2>
+            <TextField
+              fullWidth
+              label="API URL"
+              id="api-url"
+              onChange={(e) => updateState('apiUrl', e.currentTarget.value)}
+              value={state.apiUrl}
+              placeholder={CODE_CLIMBER_API_URL}
+              helperText={CODE_CLIMBER_API_URL}
+            />
           </Grid2>
           <FormDivider />
           <Grid2>
-            {state.loggingStyle === 'blacklist' ? (
-              <SitesListInput
-                handleChange={updateBlacklistState}
-                label="Blacklist"
-                sites={state.blacklist}
-                helpText="Sites that you don't want to show in your reports."
-              />
-            ) : (
-              <SitesListInput
-                handleChange={updateWhitelistState}
-                label="Whitelist"
-                sites={state.whitelist}
-                placeholder="http://google.com&#10;http://myproject.com/MyProject"
-                helpText="Sites that you want to show in your reports. You can assign URL to project by adding @@YourProject at the end of line."
-              />
-            )}
+            <TextField
+              minRows={3}
+              multiline
+              fullWidth
+              label={state.loggingStyle.slice(0, 1).toUpperCase() + state.loggingStyle.slice(1)}
+              id={`${state.loggingStyle}-siteList`}
+              onChange={(e) => updateState(state.loggingStyle, e.currentTarget.value)}
+              value={state[state.loggingStyle]}
+              placeholder="https://google.com"
+              helperText={
+                state.loggingStyle === 'blacklist'
+                  ? "Sites that you don't want to show in your reports."
+                  : 'Sites that you want to show in your reports. You can assign URL to project by adding @@YourProject at the end of line.'
+              }
+            />
           </Grid2>
           <FormDivider />
           <Grid2>
@@ -390,4 +350,4 @@ export default function Options(): JSX.Element {
       </Paper>
     </NoReduxThemeProvider>
   );
-}
+};

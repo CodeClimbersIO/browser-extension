@@ -7,7 +7,6 @@ import { Provider } from 'react-redux';
 import { RootState } from '../stores/createStore';
 
 // As a basic setup, import your same slice reducers
-import userReducer, { initialState as InitalCurrentUser } from '../reducers/currentUser';
 import configReducer, { initialConfigState } from '../reducers/configReducer';
 
 // This type interface extends the default options for render from RTL, as well
@@ -19,7 +18,6 @@ interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
 
 const rootReducer = combineReducers({
   config: configReducer,
-  currentUser: userReducer,
 });
 
 export function renderWithProviders(
@@ -27,7 +25,6 @@ export function renderWithProviders(
   {
     preloadedState = {
       config: initialConfigState,
-      currentUser: InitalCurrentUser,
     },
     // Automatically create a store instance if no store was passed in
     store = configureStore({ preloadedState, reducer: rootReducer }),
