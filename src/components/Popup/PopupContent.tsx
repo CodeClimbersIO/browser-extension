@@ -1,62 +1,74 @@
-import React from 'react'
-import { useDispatch } from 'react-redux'
+import React from "react";
 import {
   MenuList,
   MenuItem,
   ListItemIcon,
   ListItemText,
   Alert,
-} from '@mui/material'
-import { Print, PrintDisabled, SettingsApplications } from '@mui/icons-material'
+} from "@mui/material";
+import {
+  Print,
+  PrintDisabled,
+  SettingsApplications,
+} from "@mui/icons-material";
 
-import { setLoggingEnabled } from '@src/reducers/configReducer'
+import { configStore, updateConfig } from "@src/stores/configStore";
+import { useStore } from "@tanstack/react-store";
+import { useTotalTime } from "@src/api/summary.api";
+import { isChrome } from "@src/utils";
 
-export interface MainListProps {
-  loggingEnabled: boolean
-  totalTimeLoggedToday?: string
-}
 const openOptionsPage = async (): Promise<void> => {
-  await browser.runtime.openOptionsPage()
-}
-
-export const PopupContent = ({
-  loggingEnabled,
-  totalTimeLoggedToday,
-}: MainListProps) => {
-  const dispatch = useDispatch()
-
-  const enableLogging = async (): Promise<void> => {
-    dispatch(setLoggingEnabled(true))
-    await browser.storage.sync.set({ loggingEnabled: true })
+  if (isChrome()) {
+    chrome.runtime.openOptionsPage();
   }
 
-  const disableLogging = async (): Promise<void> => {
-    dispatch(setLoggingEnabled(false))
-    await browser.storage.sync.set({ loggingEnabled: false })
+  await browser.runtime.openOptionsPage();
+};
+
+const TotalTimeAlert = () => {
+  const totalTime = useTotalTime();
+
+  if (totalTime.isPending) {
+    return <Alert severity="info">Loading total time...</Alert>;
   }
+
+  if (totalTime.isError) {
+    return (
+      <Alert severity="error">
+        {totalTime.error instanceof Error
+          ? totalTime.error.message
+          : "Error loading"}
+      </Alert>
+    );
+  }
+  return (
+    <Alert severity="info">
+      <strong>{totalTime.data!.text}</strong> total time logged today
+    </Alert>
+  );
+};
+
+export const PopupContent = () => {
+  const loggingEnabled = useStore(configStore, (s) => s.loggingEnabled);
+
+  const toggleLogging = async (): Promise<void> => {
+    await updateConfig({
+      loggingEnabled: !loggingEnabled,
+    });
+  };
 
   return (
     <>
-      <Alert severity="info">
-        <strong>{totalTimeLoggedToday}</strong> total time logged today
-      </Alert>
+      <TotalTimeAlert />
       <MenuList>
-        {loggingEnabled && (
-          <MenuItem onClick={disableLogging}>
-            <ListItemIcon>
-              <PrintDisabled />
-            </ListItemIcon>
-            <ListItemText primary="Disable Logging" />
-          </MenuItem>
-        )}
-        {!loggingEnabled && (
-          <MenuItem onClick={enableLogging}>
-            <ListItemIcon>
-              <Print />
-            </ListItemIcon>
-            <ListItemText primary="Enable Logging" />
-          </MenuItem>
-        )}
+        <MenuItem onClick={toggleLogging}>
+          <ListItemIcon>
+            {loggingEnabled ? <PrintDisabled /> : <Print />}
+          </ListItemIcon>
+          <ListItemText
+            primary={`${loggingEnabled ? "Disable" : "Enable"} Logging`}
+          />
+        </MenuItem>
         <MenuItem onClick={openOptionsPage}>
           <ListItemIcon>
             <SettingsApplications />
@@ -65,5 +77,5 @@ export const PopupContent = ({
         </MenuItem>
       </MenuList>
     </>
-  )
-}
+  );
+};

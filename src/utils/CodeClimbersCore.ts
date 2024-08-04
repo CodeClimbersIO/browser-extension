@@ -1,19 +1,15 @@
 /* eslint-disable no-fallthrough */
 /* eslint-disable default-case */
-import type { AxiosResponse } from 'axios'
-import axios from 'axios'
 import type { IDBPDatabase } from 'idb'
 import { openDB } from 'idb'
-import moment from 'moment'
 import type { Tabs } from 'webextension-polyfill'
 import browser from 'webextension-polyfill'
 import { DEFAULT_CONFIG, IDLE_DETECTION_INTERVAL, SITES } from './constants'
-import type { SendHeartbeat } from './types/heartbeats'
-import type { GrandTotal, SummariesPayload } from './types/summaries'
-import { IS_FIREFOX, IS_EDGE, generateProjectFromDevSites } from './utils'
-import contains from './utils/contains'
-import getDomainFromUrl, { getDomain } from './utils/getDomainFromUrl'
-import { getEnv } from './utils/getEnv'
+import type { SendHeartbeat } from '@src/types/heartbeats'
+import { IS_FIREFOX, IS_EDGE, generateProjectFromDevSites } from '@src/utils'
+import contains from '@src/utils/contains'
+import getDomainFromUrl, { getDomain } from '@src/utils/getDomainFromUrl'
+import { getEnv } from '@src/utils/getEnv'
 
 class CodeClimbersCore {
   tabsWithDevtoolsOpen: Tabs.Tab[]
@@ -52,25 +48,6 @@ class CodeClimbersCore {
 
   setTabsWithDevtoolsOpen(tabs: Tabs.Tab[]): void {
     this.tabsWithDevtoolsOpen = tabs
-  }
-
-  async getTotalTimeLoggedToday(): Promise<GrandTotal> {
-    const env = getEnv()
-
-    const items = await browser.storage.sync.get({
-      apiUrl: env.apiUrl,
-      summariesApiEndPoint: env.summariesApiEndPoint,
-    })
-
-    const today = moment().format('YYYY-MM-DD')
-    const summariesAxiosPayload: AxiosResponse<SummariesPayload> =
-      await axios.get(`${items.apiUrl}${items.summariesApiEndPoint}`, {
-        params: {
-          end: today,
-          start: today,
-        },
-      })
-    return summariesAxiosPayload.data.data[0].grand_total
   }
 
   /**
@@ -300,7 +277,7 @@ class CodeClimbersCore {
     }
     const payload: Record<string, unknown> = {
       entity: heartbeat.url,
-      time: moment().format('X'),
+      time: Math.floor(new Date().getTime() / 1000),
       type: type,
       user_agent: `${userAgent} ${os} ${browserName}-code_climbers/${getEnv().version}`,
     }

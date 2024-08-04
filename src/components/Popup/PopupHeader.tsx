@@ -21,7 +21,7 @@ import {
 } from '@mui/icons-material'
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2'
 
-import { CODE_CLIMBER_URL, GITHUB_EXTENSION_URL } from '@src/constants'
+import { CODE_CLIMBER_URL, GITHUB_EXTENSION_URL } from '@src/utils/constants'
 
 export const PopupHeader = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -59,7 +59,7 @@ export const PopupHeader = () => {
               },
             }}
           >
-            <img src="graphics/codeclimbers-38.png" />
+            <img src="codeclimbers-38.png" />
             Code Climbers
           </Typography>
         </Grid2>

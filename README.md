@@ -36,4 +36,4 @@ Come help contribute to making it easier for coders to focus on doing what they 
 
 This project is licensed under the MIT License.
 
-Forked from [wakatime/browser-wakatime](https://github.com/wakatime/browser-wakatime) on 2024-08-03
+Forked from [wakatime/browser-wakatime](https://github.com/wakatime/browser-wakatime) on **2024-08-03**

@@ -1,4 +1,4 @@
-import { SITES, SUPPORTED_BROWSER } from '@src/constants'
+import { SITES, SUPPORTED_BROWSER } from '@src/utils/constants'
 import type { CodeClimbers } from '@src/types/codeclimbers'
 
 export const isEdge = () => navigator.userAgent.includes('Edg')
