@@ -150,6 +150,7 @@ class CodeClimbersCore {
         if (heartbeat.url) {
           await this.sendHeartbeat(
             {
+              branch: "",
               ...heartbeat,
               hostname: items.hostname as string,
               project: heartbeat.project ?? project,
