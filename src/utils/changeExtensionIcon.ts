@@ -1,5 +1,5 @@
+import { DEFAULT_CONFIG } from '@src/constants'
 import browser from 'webextension-polyfill'
-import config from '../config'
 import { IS_FIREFOX } from '.'
 
 type ColorIconTypes = 'gray' | 'red' | 'white' | ''
@@ -15,10 +15,10 @@ export default async function changeExtensionIcon(
     path = `./graphics/codeclimbers-38.png`
   } else {
     const { theme } = await browser.storage.sync.get({
-      theme: config.theme,
+      theme: DEFAULT_CONFIG.theme,
     })
     path =
-      theme === config.theme
+      theme === DEFAULT_CONFIG.theme
         ? './graphics/codeclimbers-38.png'
         : './graphics/codeclimbers-38.png'
   }

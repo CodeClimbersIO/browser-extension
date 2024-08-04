@@ -7,13 +7,13 @@ import { openDB } from 'idb'
 import moment from 'moment'
 import type { Tabs } from 'webextension-polyfill'
 import browser from 'webextension-polyfill'
-import config from './config'
-import { IDLE_DETECTION_INTERVAL, SITES } from './constants'
+import { DEFAULT_CONFIG, IDLE_DETECTION_INTERVAL, SITES } from './constants'
 import type { SendHeartbeat } from './types/heartbeats'
 import type { GrandTotal, SummariesPayload } from './types/summaries'
 import { IS_FIREFOX, IS_EDGE, generateProjectFromDevSites } from './utils'
 import contains from './utils/contains'
 import getDomainFromUrl, { getDomain } from './utils/getDomainFromUrl'
+import { getEnv } from './utils/getEnv'
 
 class CodeClimbersCore {
   tabsWithDevtoolsOpen: Tabs.Tab[]
@@ -55,9 +55,11 @@ class CodeClimbersCore {
   }
 
   async getTotalTimeLoggedToday(): Promise<GrandTotal> {
+    const env = getEnv();
+
     const items = await browser.storage.sync.get({
-      apiUrl: config.apiUrl,
-      summariesApiEndPoint: config.summariesApiEndPoint,
+      apiUrl: env.apiUrl,
+      summariesApiEndPoint: env.summariesApiEndPoint,
     })
 
     const today = moment().format('YYYY-MM-DD')
@@ -78,10 +80,10 @@ class CodeClimbersCore {
   async recordHeartbeat(payload = {}): Promise<void> {
     const items = await browser.storage.sync.get({
       blacklist: '',
-      loggingEnabled: config.loggingEnabled,
-      loggingStyle: config.loggingStyle,
-      socialMediaSites: config.socialMediaSites,
-      trackSocialMedia: config.trackSocialMedia,
+      loggingEnabled: DEFAULT_CONFIG.loggingEnabled,
+      loggingStyle: DEFAULT_CONFIG.loggingStyle,
+      socialMediaSites: DEFAULT_CONFIG.socialMediaSites,
+      trackSocialMedia: DEFAULT_CONFIG.trackSocialMedia,
       whitelist: '',
     })
 
@@ -169,10 +171,6 @@ class CodeClimbersCore {
    * Creates an array from list using \n as delimiter
    * and checks if any element in list is contained in the url.
    * Also checks if element is assigned to a project using @@ as delimiter
-   *
-   * @param url
-   * @param list
-   * @returns {object}
    */
   getHeartbeat(url: string, list: string) {
     const projectIndicatorCharacters = '@@'
@@ -242,9 +240,6 @@ class CodeClimbersCore {
   /**
    * Given the heartbeat and logging type it creates a payload and
    * sends an ajax post request to the API.
-   *
-   * @param heartbeat
-   * @param debug
    */
   async sendHeartbeat(
     heartbeat: SendHeartbeat,
@@ -275,13 +270,10 @@ class CodeClimbersCore {
 
   /**
    * Returns a promise with logging type variable.
-   *
-   * @returns {*}
-   * @private
    */
   async getLoggingType(): Promise<string> {
     const items = await browser.storage.sync.get({
-      loggingType: config.loggingType,
+      loggingType: DEFAULT_CONFIG.loggingType,
     })
 
     return items.loggingType
@@ -289,12 +281,6 @@ class CodeClimbersCore {
 
   /**
    * Creates payload for the heartbeat and returns it as JSON.
-   *
-   * @param heartbeat
-   * @param type
-   * @param debug
-   * @returns {*}
-   * @private
    */
   async preparePayload(
     heartbeat: SendHeartbeat,
@@ -316,7 +302,7 @@ class CodeClimbersCore {
       entity: heartbeat.url,
       time: moment().format('X'),
       type: type,
-      user_agent: `${userAgent} ${os} ${browserName}-code_climbers/${config.version}`,
+      user_agent: `${userAgent} ${os} ${browserName}-code_climbers/${getEnv().version}`,
     }
 
     payload.project = heartbeat.project ?? '<<LAST_PROJECT>>'
@@ -335,10 +321,6 @@ class CodeClimbersCore {
 
   /**
    * Sends AJAX request with payload to the heartbeat API as JSON.
-   *
-   * @param payload
-   * @param method
-   * @returns {*}
    */
   async sendPostRequestToApi(
     payload: Record<string, unknown>,
@@ -346,8 +328,8 @@ class CodeClimbersCore {
   ): Promise<void> {
     try {
       const items = await browser.storage.sync.get({
-        apiUrl: config.apiUrl,
-        heartbeatApiEndPoint: config.heartbeatApiEndPoint,
+        apiUrl: getEnv().apiUrl,
+        heartbeatApiEndPoint: getEnv().heartbeatApiEndPoint,
       })
 
       const request: RequestInit = {
@@ -374,7 +356,6 @@ class CodeClimbersCore {
 
   /**
    * Sends cached heartbeats request to code climbers api
-   * @param requests
    */
   async sendCachedHeartbeatsRequest(): Promise<void> {
     if (this.db) {

@@ -17,9 +17,9 @@ import { Save } from '@mui/icons-material'
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2'
 
 import { NoReduxThemeProvider } from '@src/stores/ThemeProvider'
-import config from '@src/config'
-import { CODE_CLIMBER_API_URL } from '@src/constants'
+import { CODE_CLIMBER_API_URL, DEFAULT_CONFIG } from '@src/constants'
 import type { CodeClimbers } from '@src/types/codeclimbers'
+import { getEnv } from '@src/utils/getEnv'
 
 interface State {
   apiUrl: string
@@ -42,25 +42,25 @@ const FormDivider = () => (
 export const Options = () => {
   const [showAlert, setShowAlert] = useState(false)
   const [state, setState] = useState<State>({
-    apiUrl: config.apiUrl,
+    apiUrl: getEnv().apiUrl,
     blacklist: '',
     loading: false,
-    loggingStyle: config.loggingStyle,
-    loggingType: config.loggingType,
-    socialMediaSites: config.socialMediaSites,
-    theme: config.theme,
-    trackSocialMedia: config.trackSocialMedia,
+    loggingStyle: DEFAULT_CONFIG.loggingStyle,
+    loggingType: DEFAULT_CONFIG.loggingType,
+    socialMediaSites: [...DEFAULT_CONFIG.socialMediaSites],
+    theme: DEFAULT_CONFIG.theme,
+    trackSocialMedia: DEFAULT_CONFIG.trackSocialMedia,
     whitelist: '',
   })
 
   const restoreSettings = async (): Promise<void> => {
     const items = await browser.storage.sync.get({
-      apiUrl: config.apiUrl,
+      apiUrl: DEFAULT_CONFIG.apiUrl,
       blacklist: '',
-      loggingStyle: config.loggingStyle,
-      loggingType: config.loggingType,
-      socialMediaSites: config.socialMediaSites,
-      theme: config.theme,
+      loggingStyle: DEFAULT_CONFIG.loggingStyle,
+      loggingType: DEFAULT_CONFIG.loggingType,
+      socialMediaSites: DEFAULT_CONFIG.socialMediaSites,
+      theme: DEFAULT_CONFIG.theme,
       trackSocialMedia: true,
       whitelist: '',
     })
@@ -224,7 +224,7 @@ export const Options = () => {
                   onChange={(e) =>
                     updateState(
                       'theme',
-                      e.currentTarget.value as typeof config.theme,
+                      e.currentTarget.value as CodeClimbers.Style['theme'],
                     )
                   }
                   id="theme"

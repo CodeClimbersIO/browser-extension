@@ -1,3 +1,6 @@
+import type { CodeClimbers } from "./types/codeclimbers"
+import { getEnv } from "./utils/getEnv"
+
 export const CODE_CLIMBER_URL = 'http://localhost:14400' as const
 export const CODE_CLIMBER_API_URL =
   `${CODE_CLIMBER_URL}/api/v1/wakatime` as const
@@ -44,3 +47,16 @@ export const SUPPORTED_BROWSER = {
   FIREFOX: 'firefox',
   CHROME: 'chrome',
 } as const
+
+export const DEFAULT_CONFIG = {
+  apiUrl: getEnv().apiUrl,
+
+  loggingEnabled: true,
+  trackSocialMedia: true,
+
+  loggingStyle: 'blacklist' as CodeClimbers.Logging['style'],
+  loggingType: 'domain' as CodeClimbers.Logging['type'],
+  theme: 'light' as CodeClimbers.Style['theme'],
+
+  socialMediaSites: SITES.SOCIAL_MEDIA,
+  } as const

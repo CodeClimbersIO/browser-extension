@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import config from '@src/config'
+import { DEFAULT_CONFIG } from '@src/constants'
 import type { ConfigReducer } from '@src/types/store'
 
 interface SetLoggingEnabledAction {
@@ -18,7 +18,7 @@ interface SetThemeAction {
 }
 
 export const initialConfigState: ConfigReducer = {
-  loggingEnabled: config.loggingEnabled,
+  loggingEnabled: DEFAULT_CONFIG.loggingEnabled,
   totalTimeLoggedToday: '0 minutes',
   theme: 'light',
 }
