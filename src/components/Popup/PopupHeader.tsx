@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   Menu,
   MenuList,
@@ -8,7 +8,7 @@ import {
   Typography,
   Collapse,
   IconButton,
-} from '@mui/material';
+} from '@mui/material'
 import {
   BugReport,
   Dashboard,
@@ -18,25 +18,30 @@ import {
   Info,
   Settings,
   SettingsInputComponent,
-} from '@mui/icons-material';
-import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
+} from '@mui/icons-material'
+import Grid2 from '@mui/material/Unstable_Grid2/Grid2'
 
-import { CODE_CLIMBER_URL, GITHUB_EXTENSION_URL } from '../../constants';
+import { CODE_CLIMBER_URL, GITHUB_EXTENSION_URL } from '@src/constants'
 
 export const PopupHeader = () => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [openInfo, setOpenInfo] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [openInfo, setOpenInfo] = useState(false)
 
   const handleClose = () => {
-    setAnchorEl(null);
-    setOpenInfo(false);
-  };
+    setAnchorEl(null)
+    setOpenInfo(false)
+  }
 
-  const open = Boolean(anchorEl);
+  const open = Boolean(anchorEl)
 
   return (
     <nav role="navigation">
-      <Grid2 container justifyContent="space-between" alignItems="center" pb={2}>
+      <Grid2
+        container
+        justifyContent="space-between"
+        alignItems="center"
+        pb={2}
+      >
         <Grid2 pr={2}>
           <Typography
             variant="h6"
@@ -59,7 +64,10 @@ export const PopupHeader = () => {
           </Typography>
         </Grid2>
 
-        <IconButton sx={{ height: 40, width: 40 }} onClick={(e) => setAnchorEl(e.currentTarget)}>
+        <IconButton
+          sx={{ height: 40, width: 40 }}
+          onClick={(e) => setAnchorEl(e.currentTarget)}
+        >
           <Settings />
         </IconButton>
       </Grid2>
@@ -122,5 +130,5 @@ export const PopupHeader = () => {
         </Collapse>
       </Menu>
     </nav>
-  );
-};
+  )
+}

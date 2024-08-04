@@ -4,9 +4,9 @@
 export default function inArray<T>(needle: T, haystack: T[]): boolean {
   for (let i = 0; i < haystack.length; i++) {
     if (needle == haystack[i]) {
-      return true;
+      return true
     }
   }
 
-  return false;
+  return false
 }

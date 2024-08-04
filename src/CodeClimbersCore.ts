@@ -1,22 +1,28 @@
 /* eslint-disable no-fallthrough */
 /* eslint-disable default-case */
-import axios, { AxiosResponse } from 'axios';
-import { IDBPDatabase, openDB } from 'idb';
-import moment from 'moment';
-import browser, { Tabs } from 'webextension-polyfill';
-import config from '../config/config';
-import { SendHeartbeat } from '../types/heartbeats';
-import { GrandTotal, SummariesPayload } from '../types/summaries';
-import { IS_FIREFOX, IS_EDGE, generateProjectFromDevSites } from '../utils';
-import changeExtensionState from '../utils/changeExtensionState';
-import contains from '../utils/contains';
-import getDomainFromUrl, { getDomain } from '../utils/getDomainFromUrl';
+import type { AxiosResponse } from 'axios'
+import axios from 'axios'
+import type { IDBPDatabase } from 'idb'
+import { openDB } from 'idb'
+import moment from 'moment'
+import type { Tabs } from 'webextension-polyfill'
+import browser from 'webextension-polyfill'
+import config from './config'
+import { IDLE_DETECTION_INTERVAL, SITES } from './constants'
+import type { SendHeartbeat } from './types/heartbeats'
+import type { GrandTotal, SummariesPayload } from './types/summaries'
+import { IS_FIREFOX, IS_EDGE, generateProjectFromDevSites } from './utils'
+import contains from './utils/contains'
+import getDomainFromUrl, { getDomain } from './utils/getDomainFromUrl'
 
 class CodeClimbersCore {
-  tabsWithDevtoolsOpen: Tabs.Tab[];
-  db: IDBPDatabase | undefined;
+  tabsWithDevtoolsOpen: Tabs.Tab[]
+  db: IDBPDatabase | undefined
+  state: string
+
   constructor() {
-    this.tabsWithDevtoolsOpen = [];
+    this.tabsWithDevtoolsOpen = []
+    this.state = 'idle'
   }
 
   /**
@@ -30,41 +36,39 @@ class CodeClimbersCore {
         const store = db.createObjectStore('cacheHeartbeats', {
           // The `time` property of the object will be the key, and be incremented automatically
           keyPath: 'time',
-        });
+        })
         // Switch over the oldVersion, *without breaks*, to allow the database to be incrementally upgraded.
         switch (oldVersion) {
           case 0:
           // Placeholder to execute when database is created (oldVersion is 0)
           case 1:
             // Create an index called `type` based on the `type` property of objects in the store
-            store.createIndex('time', 'time');
+            store.createIndex('time', 'time')
         }
       },
-    });
-    this.db = dbConnection;
+    })
+    this.db = dbConnection
   }
 
   setTabsWithDevtoolsOpen(tabs: Tabs.Tab[]): void {
-    this.tabsWithDevtoolsOpen = tabs;
+    this.tabsWithDevtoolsOpen = tabs
   }
 
   async getTotalTimeLoggedToday(): Promise<GrandTotal> {
     const items = await browser.storage.sync.get({
       apiUrl: config.apiUrl,
       summariesApiEndPoint: config.summariesApiEndPoint,
-    });
+    })
 
-    const today = moment().format('YYYY-MM-DD');
-    const summariesAxiosPayload: AxiosResponse<SummariesPayload> = await axios.get(
-      `${items.apiUrl}${items.summariesApiEndPoint}`,
-      {
+    const today = moment().format('YYYY-MM-DD')
+    const summariesAxiosPayload: AxiosResponse<SummariesPayload> =
+      await axios.get(`${items.apiUrl}${items.summariesApiEndPoint}`, {
         params: {
           end: today,
           start: today,
         },
-      },
-    );
-    return summariesAxiosPayload.data.data[0].grand_total;
+      })
+    return summariesAxiosPayload.data.data[0].grand_total
   }
 
   /**
@@ -74,53 +78,55 @@ class CodeClimbersCore {
   async recordHeartbeat(payload = {}): Promise<void> {
     const items = await browser.storage.sync.get({
       blacklist: '',
-      hostname: config.hostname,
       loggingEnabled: config.loggingEnabled,
       loggingStyle: config.loggingStyle,
       socialMediaSites: config.socialMediaSites,
       trackSocialMedia: config.trackSocialMedia,
       whitelist: '',
-    });
+    })
 
     if (items.loggingEnabled === true) {
-      await changeExtensionState('allGood');
+      this.state = 'allGood'
 
-      let newState = '';
+      let newState = ''
       // Detects we are running this code in the extension scope
       if (browser.idle as browser.Idle.Static | undefined) {
-        newState = await browser.idle.queryState(config.detectionIntervalInSeconds);
+        newState = await browser.idle.queryState(IDLE_DETECTION_INTERVAL)
         if (newState !== 'active') {
-          return changeExtensionState('notLogging');
+          this.state = 'notLogging'
         }
       }
 
       // Get current tab URL.
-      let url = '';
+      let url = ''
       if (browser.tabs as browser.Tabs.Static | undefined) {
-        const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-        if (tabs.length == 0) return;
-        const currentActiveTab = tabs[0];
-        url = currentActiveTab.url as string;
+        const tabs = await browser.tabs.query({
+          active: true,
+          currentWindow: true,
+        })
+        if (tabs.length == 0) return
+        const currentActiveTab = tabs[0]
+        url = currentActiveTab.url as string
       } else {
-        url = document.URL;
+        url = document.URL
       }
 
-      for (const site of config.nonTrackableSites) {
+      for (const site of SITES.NON_TRACKABLE) {
         if (url.startsWith(site)) {
           // Don't send a heartbeat on sites like 'chrome://newtab/' or 'about:newtab'
-          return;
+          return
         }
       }
 
-      const hostname = getDomain(url);
+      const hostname = getDomain(url)
       if (!items.trackSocialMedia) {
         if ((items.socialMediaSites as string[]).includes(hostname)) {
-          return changeExtensionState('blacklisted');
+          this.state = 'blacklisted'
         }
       }
 
       // Checks dev websites
-      const project = generateProjectFromDevSites(url);
+      const project = generateProjectFromDevSites(url)
 
       if (items.loggingStyle == 'blacklist') {
         if (!contains(url, items.blacklist as string)) {
@@ -128,18 +134,19 @@ class CodeClimbersCore {
             {
               hostname: items.hostname as string,
               project,
+              branch: '',
               url,
             },
             payload,
-          );
+          )
         } else {
-          await changeExtensionState('blacklisted');
-          console.log(`${url} is on a blacklist.`);
+          this.state = 'blacklisted'
+          console.log(`${url} is on a blacklist.`)
         }
       }
 
       if (items.loggingStyle == 'whitelist') {
-        const heartbeat = this.getHeartbeat(url, items.whitelist as string);
+        const heartbeat = this.getHeartbeat(url, items.whitelist as string)
         if (heartbeat.url) {
           await this.sendHeartbeat(
             {
@@ -148,10 +155,10 @@ class CodeClimbersCore {
               project: heartbeat.project ?? project,
             },
             payload,
-          );
+          )
         } else {
-          await changeExtensionState('whitelisted');
-          console.log(`${url} is not on a whitelist.`);
+          this.state = 'whitelisted'
+          console.log(`${url} is not on a whitelist.`)
         }
       }
     }
@@ -167,64 +174,68 @@ class CodeClimbersCore {
    * @returns {object}
    */
   getHeartbeat(url: string, list: string) {
-    const projectIndicatorCharacters = '@@';
+    const projectIndicatorCharacters = '@@'
 
-    const lines = list.split('\n');
+    const lines = list.split('\n')
     for (let i = 0; i < lines.length; i++) {
       // strip (http:// or https://) and trailing (`/` or `@@`)
       const cleanLine = lines[i]
         .trim()
         .replace(/(\/|@@)$/, '')
-        .replace(/^(?:https?:\/\/)?/i, '');
-      if (cleanLine === '') continue;
+        .replace(/^(?:https?:\/\/)?/i, '')
+      if (cleanLine === '') continue
 
-      const projectIndicatorIndex = cleanLine.lastIndexOf(projectIndicatorCharacters);
-      const projectIndicatorExists = projectIndicatorIndex > -1;
-      let projectName = null;
-      let urlFromLine = cleanLine;
+      const projectIndicatorIndex = cleanLine.lastIndexOf(
+        projectIndicatorCharacters,
+      )
+      const projectIndicatorExists = projectIndicatorIndex > -1
+      let projectName = null
+      let urlFromLine = cleanLine
       if (projectIndicatorExists) {
-        const start = projectIndicatorIndex + projectIndicatorCharacters.length;
-        projectName = cleanLine.substring(start);
+        const start = projectIndicatorIndex + projectIndicatorCharacters.length
+        projectName = cleanLine.substring(start)
         urlFromLine = cleanLine
           .replace(cleanLine.substring(projectIndicatorIndex), '')
-          .replace(/\/$/, '');
+          .replace(/\/$/, '')
       }
-      const schemaHttpExists = url.match(/^http:\/\//i);
-      const schemaHttpsExists = url.match(/^https:\/\//i);
-      let schema = '';
+      const schemaHttpExists = url.match(/^http:\/\//i)
+      const schemaHttpsExists = url.match(/^https:\/\//i)
+      let schema = ''
       if (schemaHttpExists) {
-        schema = 'http://';
+        schema = 'http://'
       }
       if (schemaHttpsExists) {
-        schema = 'https://';
+        schema = 'https://'
       }
       const cleanUrl = url
         .trim()
         .replace(/(\/|@@)$/, '')
-        .replace(/^(?:https?:\/\/)?/i, '');
-      const startsWithUrl = cleanUrl.toLowerCase().includes(urlFromLine.toLowerCase());
+        .replace(/^(?:https?:\/\/)?/i, '')
+      const startsWithUrl = cleanUrl
+        .toLowerCase()
+        .includes(urlFromLine.toLowerCase())
       if (startsWithUrl) {
         return {
           project: projectName,
           url: schema + urlFromLine,
-        };
+        }
       }
 
-      const lineRe = new RegExp(cleanLine.replace('.', '.').replace('*', '.*'));
+      const lineRe = new RegExp(cleanLine.replace('.', '.').replace('*', '.*'))
 
       // If url matches the current line return true
       if (lineRe.test(url)) {
         return {
           project: null,
           url: schema + urlFromLine,
-        };
+        }
       }
     }
 
     return {
       project: null,
       url: null,
-    };
+    }
   }
 
   /**
@@ -238,20 +249,26 @@ class CodeClimbersCore {
     heartbeat: SendHeartbeat,
     navigationPayload: Record<string, unknown>,
   ): Promise<void> {
-    let payload;
+    let payload
 
-    const loggingType = await this.getLoggingType();
+    const loggingType = await this.getLoggingType()
     // Get only the domain from the entity.
     // And send that in heartbeat
     if (loggingType == 'domain') {
-      heartbeat.url = getDomainFromUrl(heartbeat.url);
-      payload = await this.preparePayload(heartbeat, 'domain');
-      await this.sendPostRequestToApi({ ...payload, ...navigationPayload }, heartbeat.hostname);
+      heartbeat.url = getDomainFromUrl(heartbeat.url)
+      payload = await this.preparePayload(heartbeat, 'domain')
+      await this.sendPostRequestToApi(
+        { ...payload, ...navigationPayload },
+        heartbeat.hostname,
+      )
     }
     // Send entity in heartbeat
     else if (loggingType == 'url') {
-      payload = await this.preparePayload(heartbeat, 'url');
-      await this.sendPostRequestToApi({ ...payload, ...navigationPayload }, heartbeat.hostname);
+      payload = await this.preparePayload(heartbeat, 'url')
+      await this.sendPostRequestToApi(
+        { ...payload, ...navigationPayload },
+        heartbeat.hostname,
+      )
     }
   }
 
@@ -264,9 +281,9 @@ class CodeClimbersCore {
   async getLoggingType(): Promise<string> {
     const items = await browser.storage.sync.get({
       loggingType: config.loggingType,
-    });
+    })
 
-    return items.loggingType;
+    return items.loggingType
   }
 
   /**
@@ -278,38 +295,41 @@ class CodeClimbersCore {
    * @returns {*}
    * @private
    */
-  async preparePayload(heartbeat: SendHeartbeat, type: string): Promise<Record<string, unknown>> {
-    const os = await this.getOperatingSystem();
-    let browserName = 'chrome';
-    let userAgent;
+  async preparePayload(
+    heartbeat: SendHeartbeat,
+    type: string,
+  ): Promise<Record<string, unknown>> {
+    const os = await this.getOperatingSystem()
+    let browserName = 'chrome'
+    let userAgent
     if (IS_FIREFOX) {
-      browserName = 'firefox';
-      userAgent = navigator.userAgent.match(/Firefox\/\S+/g)![0];
+      browserName = 'firefox'
+      userAgent = navigator.userAgent.match(/Firefox\/\S+/g)![0]
     } else if (IS_EDGE) {
-      browserName = 'edge';
-      userAgent = navigator.userAgent;
+      browserName = 'edge'
+      userAgent = navigator.userAgent
     } else {
-      userAgent = navigator.userAgent.match(/Chrome\/\S+/g)![0];
+      userAgent = navigator.userAgent.match(/Chrome\/\S+/g)![0]
     }
     const payload: Record<string, unknown> = {
       entity: heartbeat.url,
       time: moment().format('X'),
       type: type,
       user_agent: `${userAgent} ${os} ${browserName}-code_climbers/${config.version}`,
-    };
+    }
 
-    payload.project = heartbeat.project ?? '<<LAST_PROJECT>>';
-    payload.branch = heartbeat.branch ?? '<<LAST_BRANCH>>';
+    payload.project = heartbeat.project ?? '<<LAST_PROJECT>>'
+    payload.branch = heartbeat.branch ?? '<<LAST_BRANCH>>'
 
-    return payload;
+    return payload
   }
 
   getOperatingSystem(): Promise<string> {
     return new Promise((resolve) => {
       chrome.runtime.getPlatformInfo(function (info) {
-        resolve(`${info.os}_${info.arch}`);
-      });
-    });
+        resolve(`${info.os}_${info.arch}`)
+      })
+    })
   }
 
   /**
@@ -319,31 +339,35 @@ class CodeClimbersCore {
    * @param method
    * @returns {*}
    */
-  async sendPostRequestToApi(payload: Record<string, unknown>, hostname = ''): Promise<void> {
+  async sendPostRequestToApi(
+    payload: Record<string, unknown>,
+    hostname = '',
+  ): Promise<void> {
     try {
       const items = await browser.storage.sync.get({
         apiUrl: config.apiUrl,
         heartbeatApiEndPoint: config.heartbeatApiEndPoint,
-      });
+      })
 
       const request: RequestInit = {
         body: JSON.stringify(payload),
         credentials: 'omit',
         method: 'POST',
-      };
+      }
       if (hostname) {
         request.headers = {
           'X-Machine-Name': hostname,
-        };
+        }
       }
-      const response = await fetch(`${items.apiUrl}${items.heartbeatApiEndPoint}`, request);
-      await response.json();
+      const response = await fetch(
+        `${items.apiUrl}${items.heartbeatApiEndPoint}`,
+        request,
+      )
+      await response.json()
     } catch (err: unknown) {
       if (this.db) {
-        await this.db.add('cacheHeartbeats', payload);
+        await this.db.add('cacheHeartbeats', payload)
       }
-
-      await changeExtensionState('notSignedIn');
     }
   }
 
@@ -353,23 +377,23 @@ class CodeClimbersCore {
    */
   async sendCachedHeartbeatsRequest(): Promise<void> {
     if (this.db) {
-      const requests = await this.db.getAll('cacheHeartbeats');
-      await this.db.clear('cacheHeartbeats');
-      const chunkSize = 50; // Create batches of max 50 request
+      const requests = await this.db.getAll('cacheHeartbeats')
+      await this.db.clear('cacheHeartbeats')
+      const chunkSize = 50 // Create batches of max 50 request
       for (let i = 0; i < requests.length; i += chunkSize) {
-        const chunk = requests.slice(i, i + chunkSize);
-        const requestsPromises: Promise<void>[] = [];
+        const chunk = requests.slice(i, i + chunkSize)
+        const requestsPromises: Promise<void>[] = []
         chunk.forEach((request: Record<string, unknown>) =>
           requestsPromises.push(this.sendPostRequestToApi(request)),
-        );
+        )
         try {
-          await Promise.all(requestsPromises);
+          await Promise.all(requestsPromises)
         } catch (error: unknown) {
-          console.log('Error sending heartbeats');
+          console.log('Error sending heartbeats')
         }
       }
     }
   }
 }
 
-export default new CodeClimbersCore();
+export default new CodeClimbersCore()
