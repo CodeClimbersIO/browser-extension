@@ -1,5 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { MenuList, MenuItem, ListItemIcon, ListItemText, Alert } from '@mui/material';
+import { Login, Logout, Print, PrintDisabled, SettingsApplications } from '@mui/icons-material';
+
 import { CODE_CLIMBER_URL } from '../constants';
 import { configLogout, setLoggingEnabled } from '../reducers/configReducer';
 import { userLogout } from '../reducers/currentUser';
@@ -45,74 +48,58 @@ export default function MainList({
   };
 
   return (
-    <div>
+    <>
       {user && (
-        <div className="row">
-          <div className="col-xs-12">
-            <blockquote>
-              <p>{totalTimeLoggedToday}</p>
-              <small>
-                <cite className="text-body-secondary">TOTAL TIME LOGGED TODAY</cite>
-              </small>
-            </blockquote>
-          </div>
-        </div>
+        <Alert severity="info">
+          <strong>{totalTimeLoggedToday}</strong> TOTAL TIME LOGGED TODAY
+        </Alert>
       )}
-      {loggingEnabled && user && (
-        <div className="row">
-          <div className="col-xs-12">
-            <p>
-              <a
-                href="#"
-                onClick={disableLogging}
-                className="btn btn-danger btn-block w-100 btn-sm"
-              >
-                Disable logging
-              </a>
-            </p>
-          </div>
-        </div>
-      )}
-      {!loggingEnabled && user && (
-        <div className="row">
-          <div className="col-xs-12">
-            <p>
-              <a
-                href="#"
-                onClick={enableLogging}
-                className="btn btn-success btn-block w-100 btn-sm"
-              >
-                Enable logging
-              </a>
-            </p>
-          </div>
-        </div>
-      )}
-      <div className="list-group">
-        <a href="#" className="list-group-item text-body-secondary" onClick={openOptionsPage}>
-          <i className="fa fa-fw fa-cogs me-2"></i>
-          Options
-        </a>
+      <MenuList>
+        {loggingEnabled && user && (
+          <MenuItem onClick={disableLogging}>
+            <ListItemIcon>
+              <PrintDisabled />
+            </ListItemIcon>
+            <ListItemText primary="Disable Logging" />
+          </MenuItem>
+        )}
+        {!loggingEnabled && user && (
+          <MenuItem onClick={enableLogging}>
+            <ListItemIcon>
+              <Print />
+            </ListItemIcon>
+            <ListItemText primary="Enable Logging" />
+          </MenuItem>
+        )}
+        <MenuItem onClick={openOptionsPage}>
+          <ListItemIcon>
+            <SettingsApplications />
+          </ListItemIcon>
+          <ListItemText primary="Extension Preferences" />
+        </MenuItem>
+
         {user && (
-          <div>
-            <a href="#" className="list-group-item text-body-secondary" onClick={logoutUser}>
-              <i className="fa fa-fw fa-sign-out me-2"></i>
-              Logout
-            </a>
-          </div>
+          <MenuItem onClick={logoutUser}>
+            <ListItemIcon>
+              <Logout />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </MenuItem>
         )}
         {!user && (
-          <a
+          <MenuItem
+            component="a"
             target="_blank"
-            rel="noreferrer"
             href={`${CODE_CLIMBER_URL}/login`}
-            className="list-group-item text-body-secondary"
+            rel="noreferrer"
           >
-            <i className="fa fa-fw fa-sign-in me-2"></i>
-            Login
-          </a>
+            <ListItemIcon>
+              <Login />
+            </ListItemIcon>
+            <ListItemText primary="Login" />
+          </MenuItem>
         )}
-      </div>
-    </div>
+      </MenuList>
+    </>
   );
 }

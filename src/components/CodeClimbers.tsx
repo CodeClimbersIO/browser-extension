@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Alert, Box, Card, Paper } from '@mui/material';
 import config from '../config/config';
 import { ApiKeyReducer, ReduxSelector } from '../types/store';
 import apiKeyInvalid from '../utils/apiKey';
 import { fetchUserData } from '../utils/user';
-import Alert from './Alert';
 import MainList from './MainList';
 import NavBar from './NavBar';
 
-export default function WakaTime(): JSX.Element {
+export default function CodeClimbers(): JSX.Element {
   const dispatch = useDispatch();
   const [extensionState, setExtensionState] = useState('');
 
@@ -16,6 +16,7 @@ export default function WakaTime(): JSX.Element {
     apiKey: apiKeyFromRedux,
     loggingEnabled,
     totalTimeLoggedToday,
+    theme,
   }: ApiKeyReducer = useSelector((selector: ReduxSelector) => selector.config);
 
   useEffect(() => {
@@ -30,31 +31,28 @@ export default function WakaTime(): JSX.Element {
   const isApiKeyValid = apiKeyInvalid(apiKeyFromRedux) === '';
 
   return (
-    <div className="py-4 px-2 pt-0">
+    <Paper elevation={0} sx={{ p: 2, pt: 4, display: 'flex', flexDirection: 'column', width: 300 }}>
       <NavBar />
+      {theme} - {String(loggingEnabled)}
       {isApiKeyValid && extensionState === 'notSignedIn' && (
         <Alert
-          type={config.alert.failure.type}
-          text={'Invalid API key or API url'}
+          severity={config.alert.failure.type}
           onClick={() => browser.runtime.openOptionsPage()}
           style={{ cursor: 'pointer' }}
-        />
+        >
+          Invalid API key or API url
+        </Alert>
       )}
       {!isApiKeyValid && (
         <Alert
-          type={config.alert.failure.type}
-          text={'Please update your api key'}
+          severity={config.alert.failure.type}
           onClick={() => browser.runtime.openOptionsPage()}
           style={{ cursor: 'pointer' }}
-        />
+        >
+          Please update your api key
+        </Alert>
       )}
-      <div className="container mt-0">
-        <div className="row">
-          <div className="col-md-12">
-            <MainList loggingEnabled={loggingEnabled} totalTimeLoggedToday={totalTimeLoggedToday} />
-          </div>
-        </div>
-      </div>
-    </div>
+      <MainList loggingEnabled={loggingEnabled} totalTimeLoggedToday={totalTimeLoggedToday} />
+    </Paper>
   );
 }

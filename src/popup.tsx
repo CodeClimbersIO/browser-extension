@@ -5,15 +5,21 @@ import CodeClimbers from './components/CodeClimbers';
 import createStore from './stores/createStore';
 import checkCurrentUser from './utils/checkCurrentUser';
 
-import 'bootstrap/dist/js/bootstrap';
+import { ThemeProvider } from './stores/ThemeProvider';
 
 const container = document.getElementById('codeclimbers');
 const root = createRoot(container!);
 const store = createStore('CodeClimbers-Options');
 checkCurrentUser(store)(30 * 1000);
 
+const Component = () => (
+  <ThemeProvider>
+    <CodeClimbers />
+  </ThemeProvider>
+);
+
 root.render(
   <Provider store={store}>
-    <CodeClimbers />
+    <Component />
   </Provider>,
 );

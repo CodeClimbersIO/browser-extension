@@ -17,10 +17,16 @@ interface SetTotalTimeLoggedTodayAction {
   type: string;
 }
 
+interface SetThemeAction {
+  payload: 'light' | 'dark';
+  type: string;
+}
+
 export const initialConfigState: ApiKeyReducer = {
   apiKey: '',
   loggingEnabled: config.loggingEnabled,
   totalTimeLoggedToday: '0 minutes',
+  theme: 'light',
 };
 
 const apiKeySlice = createSlice({
@@ -41,10 +47,13 @@ const apiKeySlice = createSlice({
     setTotalTimeLoggedToday: (state, action: SetTotalTimeLoggedTodayAction) => {
       state.totalTimeLoggedToday = action.payload;
     },
+    setTheme: (state, action: SetThemeAction) => {
+      state.theme = action.payload;
+    },
   },
 });
 
 export const actions = apiKeySlice.actions;
-export const { configLogout, setApiKey, setLoggingEnabled, setTotalTimeLoggedToday } =
+export const { configLogout, setApiKey, setLoggingEnabled, setTotalTimeLoggedToday, setTheme } =
   apiKeySlice.actions;
 export default apiKeySlice.reducer;

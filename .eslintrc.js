@@ -39,19 +39,12 @@ module.exports = {
   rules: {
     'no-await-in-loop': 'off',
     'prettier/prettier': 'error',
-    'sort-keys-fix/sort-keys-fix': 'error',
     'testing-library/no-debug': 'off',
   },
   settings: {
-    'import/extensions': ['.js', '.jsx', '.ts', '.tsx'],
     'import/ignore': ['.scss', '.css'],
     'import/parsers': {
       '@typescript-eslint/parser': ['.ts', '.tsx'],
-    },
-    'import/resolver': {
-      node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      },
     },
   },
 };

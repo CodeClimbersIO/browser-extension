@@ -7,9 +7,6 @@ import { CODE_CLIMBER_API_URL, CODE_CLIMBER_URL } from './src/constants';
 
 type BrowserTypes = 'chrome' | 'firefox' | 'edge';
 
-const publicFolder = join(__dirname, 'public');
-const cssFolder = join(publicFolder, 'css');
-const fontFolder = join(publicFolder, 'fonts');
 const graphicsFolder = join(__dirname, 'graphics');
 const srcFolder = join(__dirname, 'src');
 const htmlFolder = join(srcFolder, 'html');
@@ -44,8 +41,6 @@ const getConfigByBrowser = (isProd: boolean, browser: BrowserTypes): webpack.Con
     plugins: [
       new CopyPlugin({
         patterns: [
-          { from: cssFolder, to: 'public/css' },
-          { from: fontFolder, to: 'public/fonts' },
           { from: graphicsFolder, to: 'graphics' },
           { from: htmlFolder },
           // TODO: Create a mechanism to have a firefox manifest vs chrome

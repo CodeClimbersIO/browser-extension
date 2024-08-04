@@ -1,5 +1,10 @@
 import { AnyAction, Dispatch } from '@reduxjs/toolkit';
-import { setApiKey, setLoggingEnabled, setTotalTimeLoggedToday } from '../reducers/configReducer';
+import {
+  setApiKey,
+  setLoggingEnabled,
+  setTotalTimeLoggedToday,
+  setTheme,
+} from '../reducers/configReducer';
 import config from '../config/config';
 import CodeClimbersCore from '../core/CodeClimbersCore';
 import { setUser } from '../reducers/currentUser';
@@ -52,8 +57,9 @@ export const fetchUserData = async (
     const [data, totalTimeLoggedTodayResponse, items] = await Promise.all([
       CodeClimbersCore.checkAuth(apiKey),
       CodeClimbersCore.getTotalTimeLoggedToday(apiKey),
-      browser.storage.sync.get({ loggingEnabled: config.loggingEnabled }),
+      browser.storage.sync.get({ loggingEnabled: config.loggingEnabled, theme: config.theme }),
     ]);
+
     dispatch(setUser(data));
 
     if (items.loggingEnabled === true) {
@@ -63,6 +69,7 @@ export const fetchUserData = async (
     }
 
     dispatch(setLoggingEnabled(items.loggingEnabled as boolean));
+    dispatch(setTheme(items.theme as 'dark' | 'light'));
     dispatch(setTotalTimeLoggedToday(totalTimeLoggedTodayResponse.text));
 
     await CodeClimbersCore.recordHeartbeat();

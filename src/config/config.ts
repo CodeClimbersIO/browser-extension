@@ -1,5 +1,6 @@
 import browser from 'webextension-polyfill';
 import { CODE_CLIMBER_API_URL, CODE_CLIMBER_URL } from '../constants';
+import { AlertProps } from '@mui/material';
 
 /**
  * Logging
@@ -13,7 +14,7 @@ export type LoggingStyle = 'whitelist' | 'blacklist';
  * Logging type
  */
 export type LoggingType = 'domain' | 'url';
-export type SuccessOrFailType = 'success' | 'danger';
+export type SuccessOrFailType = AlertProps['severity'];
 /**
  * Predefined alert type and text for success and failure.
  */
@@ -98,7 +99,7 @@ export interface Config {
   /**
    * Options for theme
    */
-  theme: 'light';
+  theme: 'light' | 'dark';
   tooltips: Tooltips;
   trackSocialMedia: boolean;
   /**
@@ -111,7 +112,7 @@ const config: Config = {
   alert: {
     failure: {
       text: 'There was an error while saving the options!',
-      type: 'danger',
+      type: 'error',
     },
     success: {
       text: 'Options have been saved!',
