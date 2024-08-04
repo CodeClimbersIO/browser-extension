@@ -1,29 +1,27 @@
 ## Contributing
 
-TODO
+We welcome contributions! If you haven't already, watch the [CLI Getting Started Video](https://youtu.be/Q4EJKXDi3a8) for how we want the project to be setup and take a look at the conventions below to get started contributing.
 
-# This repository is currently migrating the build process
+[![Getting Started Video](https://i9.ytimg.com/vi_webp/Q4EJKXDi3a8/mq1.webp?sqp=CPTKhbUG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYACxgWKAgwIABABGGQgZChkMA8=&rs=AOn4CLATRoV8G6s9Zl8mY4Pi_mmujrDAww)](https://youtu.be/Q4EJKXDi3a8)
 
-We are currently migrating from using [gulp](https://gulpjs.com/) -> [webpack](https://www.google.com/search?q=webpack&oq=webpack&aqs=chrome.0.69i59l3j69i60l3j69i61l2.1368j0j4&sourceid=chrome&ie=UTF-8) for asset bundling. The currently published build will be left in place until this is complete
+## Overall guidelines | Suggestions
 
-![build locations](./screenshots/repo-build.png)
+- 🙏 Thank you for your help! Your contributions will motivate developers to do greater things!
+- 🥇 Keep it simple. We don't need optimizations right now. We need features!
+- 🤖 Built by devs for devs so if you want to make a change to make things better, do it! Make a PR and let rphovley know
+  to review it. If it's a big change, a heads up before you start will save some heartache.
 
-## Pre-requisites
+## Quick Start
 
-- node v20
-- npm 8.19.3
+- Have Chrome & Firefox installed
+- npm install
+- npm run dev
 
-It is suggested you use [nvm](https://github.com/nvm-sh/nvm) to manage your node version
+### Conventions
 
-It is suggested to install this globally[@xarc/run-cli](https://www.npmjs.com/package/@xarc/run-cli)
-
-This will allow you to run varios tasks
-![xrun auto complete](./screenshots/xrun-autocomplete.png)
-
-## Development instructions
-
-```
-    nvm use 20
-    npm install
-    npm run dev
-```
+- All files should be typescript and avoid `any` types within reason
+- Components should be functional and the name should be PascalCase
+- All components should reside in the `components` directory.
+- Styling: make use of the `sx` attribute for any material-ui customizations.
+- Styling: make use of the appropriate material-ui components for layouts like `Grid` or `Stack` when possible, but `Box` is a great fallback
+- Styling: when needing to do your own work with `Box` for layouts, make use of `flex` instead of other css layout types where possible
