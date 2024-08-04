@@ -21,7 +21,7 @@
     "*.json": [
       "prettier --write"
     ],
-    "*.{js|jsx|ts|tsx}": [
+    "*.js|jsx|ts|tsx": [
       "eslint",
       "prettier --write",
       "git add"
