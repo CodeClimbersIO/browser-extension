@@ -1,23 +1,23 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import { Provider } from 'react-redux';
-import { Popup } from '../components/Popup/Popup';
-import { createStore } from '../stores/createStore';
+import React from 'react'
+import { createRoot } from 'react-dom/client'
+import { Provider } from 'react-redux'
+import { Popup } from '@src/components/Popup/Popup'
+import { createStore } from '@src/stores/createStore'
 
-import { ThemeProvider } from '../stores/ThemeProvider';
+import { ThemeProvider } from '@src/stores/ThemeProvider'
 
-const container = document.getElementById('root');
-const root = createRoot(container!);
-const store = createStore();
+const container = document.getElementById('root')
+const root = createRoot(container!)
+const store = createStore()
 
 const Component = () => (
   <ThemeProvider>
     <Popup />
   </ThemeProvider>
-);
+)
 
 root.render(
   <Provider store={store}>
     <Component />
   </Provider>,
-);
+)

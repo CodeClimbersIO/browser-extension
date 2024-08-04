@@ -7,13 +7,18 @@
     "noImplicitAny": true,
     "module": "commonjs",
     "moduleResolution": "node",
+    "moduleDetection": "force",
     "target": "es5",
     "allowSyntheticDefaultImports": true,
     "jsx": "react",
     "outDir": "lib",
     "lib": ["es2015", "es2016", "es2017", "dom"],
+    "importsNotUsedAsValues": "error",
     "baseUrl": "./",
-    "paths": {}
+    "paths": {
+      "@src/*": ["./src/*"]
+    }
   },
-  "exclude": []
+  "include": ["./src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

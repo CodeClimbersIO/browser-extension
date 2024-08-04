@@ -1,33 +1,39 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
-import { MenuList, MenuItem, ListItemIcon, ListItemText, Alert } from '@mui/material';
-import { Print, PrintDisabled, SettingsApplications } from '@mui/icons-material';
+import React from 'react'
+import { useDispatch } from 'react-redux'
+import {
+  MenuList,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  Alert,
+} from '@mui/material'
+import { Print, PrintDisabled, SettingsApplications } from '@mui/icons-material'
 
-import { setLoggingEnabled } from '../../reducers/configReducer';
-import changeExtensionState from '../../utils/changeExtensionState';
+import { setLoggingEnabled } from '@src/reducers/configReducer'
 
 export interface MainListProps {
-  loggingEnabled: boolean;
-  totalTimeLoggedToday?: string;
+  loggingEnabled: boolean
+  totalTimeLoggedToday?: string
 }
 const openOptionsPage = async (): Promise<void> => {
-  await browser.runtime.openOptionsPage();
-};
+  await browser.runtime.openOptionsPage()
+}
 
-export const PopupContent = ({ loggingEnabled, totalTimeLoggedToday }: MainListProps) => {
-  const dispatch = useDispatch();
+export const PopupContent = ({
+  loggingEnabled,
+  totalTimeLoggedToday,
+}: MainListProps) => {
+  const dispatch = useDispatch()
 
   const enableLogging = async (): Promise<void> => {
-    dispatch(setLoggingEnabled(true));
-    await browser.storage.sync.set({ loggingEnabled: true });
-    await changeExtensionState('allGood');
-  };
+    dispatch(setLoggingEnabled(true))
+    await browser.storage.sync.set({ loggingEnabled: true })
+  }
 
   const disableLogging = async (): Promise<void> => {
-    dispatch(setLoggingEnabled(false));
-    await browser.storage.sync.set({ loggingEnabled: false });
-    await changeExtensionState('notLogging');
-  };
+    dispatch(setLoggingEnabled(false))
+    await browser.storage.sync.set({ loggingEnabled: false })
+  }
 
   return (
     <>
@@ -59,5 +65,5 @@ export const PopupContent = ({ loggingEnabled, totalTimeLoggedToday }: MainListP
         </MenuItem>
       </MenuList>
     </>
-  );
-};
+  )
+}
