@@ -9,11 +9,13 @@
 ## Intention
 
 With this change I intend to...
+
 <!-- Please state what the intention of the change is -->
 
 ## Review Points
 
 Please take extra care reviewing...
+
 <!-- Please list anything you want to have checked extra carefully -->
 
 ## The code follows best practices
