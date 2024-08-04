@@ -21,6 +21,7 @@ We welcome contributions! If you haven't already, watch the [CLI Getting Started
 
 - All files should be typescript and avoid `any` types within reason
 - Components should be functional and the name should be PascalCase
+- Any api calls should be included in the `api` directory and make use of tanstack
 - All components should reside in the `components` directory.
 - Styling: make use of the `sx` attribute for any material-ui customizations.
 - Styling: make use of the appropriate material-ui components for layouts like `Grid` or `Stack` when possible, but `Box` is a great fallback
