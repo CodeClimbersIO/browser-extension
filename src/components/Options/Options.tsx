@@ -7,7 +7,7 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
-  Grow,
+  Slide,
   Paper,
   Radio,
   RadioGroup,
@@ -16,22 +16,16 @@ import {
 import { Save } from '@mui/icons-material'
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2'
 
-import { NoReduxThemeProvider } from '@src/stores/ThemeProvider'
-import { CODE_CLIMBER_API_URL, DEFAULT_CONFIG } from '@src/constants'
+import { CODE_CLIMBER_API_URL } from '@src/utils/constants'
 import type { CodeClimbers } from '@src/types/codeclimbers'
-import { getEnv } from '@src/utils/getEnv'
-
-interface State {
-  apiUrl: string
-  blacklist: string
-  loading: boolean
-  loggingStyle: CodeClimbers.Logging['style']
-  loggingType: CodeClimbers.Logging['type']
-  socialMediaSites: string[]
-  theme: CodeClimbers.Style['theme']
-  trackSocialMedia: boolean
-  whitelist: string
-}
+import { useStore } from '@tanstack/react-store'
+import type { ConfigStore } from '@src/stores/configStore'
+import {
+  configStore,
+  updateConfig,
+  useSyncConfigStore,
+} from '@src/stores/configStore'
+import { LocalThemeProvider } from '@src/stores/ThemeProvider'
 
 const FormDivider = () => (
   <Grid2>
@@ -40,76 +34,37 @@ const FormDivider = () => (
 )
 
 export const Options = () => {
+  const configState = useStore(configStore, (s) => s)
+
+  const [loading, setLoading] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
-  const [state, setState] = useState<State>({
-    apiUrl: getEnv().apiUrl,
-    blacklist: '',
-    loading: false,
-    loggingStyle: DEFAULT_CONFIG.loggingStyle,
-    loggingType: DEFAULT_CONFIG.loggingType,
-    socialMediaSites: [...DEFAULT_CONFIG.socialMediaSites],
-    theme: DEFAULT_CONFIG.theme,
-    trackSocialMedia: DEFAULT_CONFIG.trackSocialMedia,
-    whitelist: '',
-  })
+  const [state, setState] = useState(structuredClone(configState))
 
-  const restoreSettings = async (): Promise<void> => {
-    const items = await browser.storage.sync.get({
-      apiUrl: getEnv().apiUrl,
-      blacklist: '',
-      loggingStyle: DEFAULT_CONFIG.loggingStyle,
-      loggingType: DEFAULT_CONFIG.loggingType,
-      socialMediaSites: DEFAULT_CONFIG.socialMediaSites,
-      theme: DEFAULT_CONFIG.theme,
-      trackSocialMedia: true,
-      whitelist: '',
-    })
-
-    // Handle prod accounts with old social media stored as string
-    if (typeof items.socialMediaSites === 'string') {
-      await browser.storage.sync.set({
-        socialMediaSites: items.socialMediaSites.split('\n'),
-      })
-      items.socialMediaSites = items.socialMediaSites.split('\n')
-    }
-
-    setState({
-      ...state,
-      apiUrl: items.apiUrl,
-      loggingStyle: items.loggingStyle,
-      loggingType: items.loggingType,
-      socialMediaSites: items.socialMediaSites,
-      theme: items.theme,
-      trackSocialMedia: items.trackSocialMedia,
-
-      blacklist: items.blacklist,
-      whitelist: items.whitelist,
-    })
-  }
+  useSyncConfigStore()
 
   useEffect(() => {
-    void restoreSettings()
-  }, [])
+    setState(configState)
+  }, [configState])
 
-  const handleSubmit = async () => {
-    if (state.loading) return
-    setState({ ...state, loading: true })
+  const handleSubmit = () => {
+    if (loading) return
+    setLoading(true)
 
     const theme = state.theme
     const loggingType = state.loggingType
     const loggingStyle = state.loggingStyle
     const trackSocialMedia = state.trackSocialMedia
     const socialMediaSites = state.socialMediaSites
-    // Trimming blacklist and whitelist removes blank lines and spaces.
-    const blacklist = state.blacklist.trim()
-    const whitelist = state.whitelist.trim()
-    let apiUrl = state.apiUrl
 
+    const blacklist = state.blacklist ? state.blacklist.trim() : null
+    const whitelist = state.whitelist ? state.whitelist.trim() : null
+
+    let apiUrl = state.apiUrl
     if (apiUrl.endsWith('/')) {
       apiUrl = apiUrl.slice(0, -1)
     }
 
-    await browser.storage.sync.set({
+    updateConfig({
       apiUrl,
       blacklist,
       loggingStyle,
@@ -119,26 +74,21 @@ export const Options = () => {
       trackSocialMedia,
       whitelist,
     })
-
-    setState((s) => ({
-      ...s,
-      blacklist,
-      whitelist,
-      apiUrl,
-      loading: false,
-    }))
-    setShowAlert(true)
+      .then(() => setShowAlert(true))
+      .finally(() => setLoading(false))
   }
 
   // const toggleSocialMedia = () => {
   //   setState({ ...state, trackSocialMedia: !state.trackSocialMedia });
   // };
 
-  const updateState = <Key extends keyof State>(key: Key, value: State[Key]) =>
-    setState({ ...state, [key]: value })
+  const updateState = <Key extends keyof ConfigStore>(
+    key: Key,
+    value: ConfigStore[Key],
+  ) => setState({ ...state, [key]: value })
 
   return (
-    <NoReduxThemeProvider theme={state.theme}>
+    <LocalThemeProvider theme={state.theme}>
       <Paper sx={{ p: 2 }}>
         <Grid2
           component="form"
@@ -343,25 +293,16 @@ export const Options = () => {
               </div>
             </div>
           </div> */}
-
-          <Grow in={showAlert}>
-            <Alert
-              sx={{ my: 2 }}
-              severity={'success'}
-              onClose={() => setShowAlert(false)}
-            >
+          <Slide in={showAlert} unmountOnExit direction="right">
+            <Alert severity={'success'} onClose={() => setShowAlert(false)}>
               Updated
             </Alert>
-          </Grow>
-          <Grid2
-            display="flex"
-            justifyContent="flex-end"
-            sx={{ mt: !showAlert ? -10 : 0 }}
-          >
+          </Slide>
+          <Grid2 display="flex" justifyContent="flex-end">
             <Button
-              startIcon={state.loading ? <CircularProgress /> : <Save />}
+              startIcon={loading ? <CircularProgress /> : <Save />}
               type="submit"
-              disabled={state.loading}
+              disabled={loading}
               variant="contained"
             >
               Save
@@ -369,6 +310,6 @@ export const Options = () => {
           </Grid2>
         </Grid2>
       </Paper>
-    </NoReduxThemeProvider>
+    </LocalThemeProvider>
   )
 }

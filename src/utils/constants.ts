@@ -1,4 +1,4 @@
-import type { CodeClimbers } from './types/codeclimbers'
+import type { CodeClimbers } from '@src/types/codeclimbers'
 
 export const CODE_CLIMBER_URL = 'http://localhost:14400' as const
 export const CODE_CLIMBER_API_URL =

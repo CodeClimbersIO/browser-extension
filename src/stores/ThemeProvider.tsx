@@ -1,51 +1,50 @@
-import React from 'react'
-import type { PaletteOptions } from '@mui/material'
-import { createTheme, ThemeProvider as MuiThemeProvider } from '@mui/material'
-import { useSelector } from 'react-redux'
-import type { ConfigReducer, ReduxSelector } from '@src/types/store'
+import React from "react";
+import type { PaletteOptions } from "@mui/material";
+import { createTheme, ThemeProvider as MuiThemeProvider } from "@mui/material";
+import { useStore } from "@tanstack/react-store";
+import { configStore } from "./configStore";
+import type { CodeClimbers } from "@src/types/codeclimbers";
 
 // Needs to be kept in sync with CodeClimbers/cli/packages/app theme
-const palette: PaletteOptions = {}
+const palette: PaletteOptions = {};
 
 const lightTheme = createTheme({
   palette: {
-    mode: 'light',
+    mode: "light",
     ...palette,
   },
-})
+});
 
 const darkTheme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: "dark",
     ...palette,
   },
-})
+});
 
-const getTheme = (theme: ConfigReducer['theme']) => {
-  return theme === 'light' ? lightTheme : darkTheme
-}
+const getTheme = (theme: CodeClimbers.Style["theme"]) => {
+  return theme === "light" ? lightTheme : darkTheme;
+};
 
 type ThemeProviderProps = {
-  children: React.ReactNode
-}
+  children: React.ReactNode;
+};
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-  const { theme }: ConfigReducer = useSelector(
-    (selector: ReduxSelector) => selector.config,
-  )
+  const theme = useStore(configStore, (s) => s.theme);
 
-  console.log({ theme })
+  return (
+    <MuiThemeProvider theme={getTheme(theme)}>{children}</MuiThemeProvider>
+  );
+};
 
-  return <MuiThemeProvider theme={getTheme(theme)}>{children}</MuiThemeProvider>
-}
+type LocalThemeProviderProps = ThemeProviderProps & {
+  theme: CodeClimbers.Style["theme"];
+};
 
-type NoReduxThemeProviderProps = ThemeProviderProps & {
-  theme: ConfigReducer['theme']
-}
-
-export const NoReduxThemeProvider = ({
+export const LocalThemeProvider = ({
   children,
   theme,
-}: NoReduxThemeProviderProps) => (
+}: LocalThemeProviderProps) => (
   <MuiThemeProvider theme={getTheme(theme)}>{children}</MuiThemeProvider>
-)
+);

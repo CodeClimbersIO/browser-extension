@@ -1,4 +1,4 @@
-import { CODE_CLIMBER_API_URL } from '@src/constants'
+import { CODE_CLIMBER_API_URL } from '@src/utils/constants'
 import type { CodeClimbers } from '@src/types/codeclimbers'
 
 export const getEnv = () =>

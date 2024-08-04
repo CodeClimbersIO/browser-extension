@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from '@src/constants'
+import { DEFAULT_CONFIG } from '@src/utils/constants'
 import browser from 'webextension-polyfill'
 import { IS_FIREFOX } from '.'
 
@@ -12,15 +12,15 @@ export default async function changeExtensionIcon(
 ): Promise<void> {
   let path
   if (color) {
-    path = `./graphics/codeclimbers-38.png`
+    path = `./public/codeclimbers-38.png`
   } else {
     const { theme } = await browser.storage.sync.get({
       theme: DEFAULT_CONFIG.theme,
     })
     path =
       theme === DEFAULT_CONFIG.theme
-        ? './graphics/codeclimbers-38.png'
-        : './graphics/codeclimbers-38.png'
+        ? './public/codeclimbers-38.png'
+        : './public/codeclimbers-38.png'
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition

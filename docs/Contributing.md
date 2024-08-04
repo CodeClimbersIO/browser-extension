@@ -16,6 +16,7 @@ We welcome contributions! If you haven't already, watch the [CLI Getting Started
 - Have Chrome & Firefox installed
 - npm install
 - npm run dev
+- npm run browsers
 
 ### Conventions
 
@@ -26,3 +27,7 @@ We welcome contributions! If you haven't already, watch the [CLI Getting Started
 - Styling: make use of the `sx` attribute for any material-ui customizations.
 - Styling: make use of the appropriate material-ui components for layouts like `Grid` or `Stack` when possible, but `Box` is a great fallback
 - Styling: when needing to do your own work with `Box` for layouts, make use of `flex` instead of other css layout types where possible
+- Use tanstack store for global state management so we can easily sync state between popup/options/external react-code.
+
+### Tips
+- For debugging in Chrome, you can turn on the "Developer Mode" in the extensions page and then click on "Details" -> toggle on "Collect Errors". Then if you return to the extensions home page, you will see an "Errors" button on the extension.

@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "Code Climbers",
+  "description": "Code Climbers helps you track time spent on coding and improve your productivity.",
+  "homepage_url": "http://localhost:14400",
+  "host_permissions": ["http://localhost:14400/*"],
+  "icons": {
+    "16": "public/codeclimbers-16.png",
+    "48": "public/codeclimbers-48.png",
+    "128": "public/codeclimbers-128.png"
+  },
+  "action": {
+    "default_popup": "src/routes/popup/index.html",
+    "default_title": "Code Climbers",
+    "default_icon": {
+      "38": "public/codeclimbers-38.png"
+    }
+  },
+  "options_ui": {
+    "page": "src/routes/options/index.html"
+  },
+  "background": {
+    "service_worker": "src/routes/background/background.ts",
+    "type": "module"
+  },
+  "permissions": ["alarms", "tabs", "storage", "idle"],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*", "<all_urls>"],
+      "js": ["src/routes/content/content.ts"],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "public/codeclimbers-128.png",
+        "public/codeclimbers-38.png"
+      ],
+      "matches": []
+    }
+  ]
+}
