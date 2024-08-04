@@ -35,6 +35,7 @@
     "@mui/icons-material": "^5.16.6",
     "@mui/material": "^5.16.6",
     "@reduxjs/toolkit": "^1.9.0",
+    "@tanstack/react-query": "^5.51.21",
     "bootswatch": "^5.2.3",
     "create-react-class": "^15.7.0",
     "idb": "^7.1.1",
