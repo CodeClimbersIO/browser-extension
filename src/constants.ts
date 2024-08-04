@@ -1,5 +1,4 @@
 import type { CodeClimbers } from "./types/codeclimbers"
-import { getEnv } from "./utils/getEnv"
 
 export const CODE_CLIMBER_URL = 'http://localhost:14400' as const
 export const CODE_CLIMBER_API_URL =
@@ -49,8 +48,6 @@ export const SUPPORTED_BROWSER = {
 } as const
 
 export const DEFAULT_CONFIG = {
-  apiUrl: getEnv().apiUrl,
-
   loggingEnabled: true,
   trackSocialMedia: true,
 

@@ -4,8 +4,8 @@ import {
   setTotalTimeLoggedToday,
   setTheme,
 } from '../reducers/configReducer'
-import config from '../config'
 import CodeClimbersCore from '../CodeClimbersCore'
+import { DEFAULT_CONFIG } from '@src/constants'
 
 export const fetchUserData = async (
   dispatch: Dispatch<AnyAction>,
@@ -14,8 +14,8 @@ export const fetchUserData = async (
     const [totalTimeLoggedTodayResponse, items] = await Promise.all([
       CodeClimbersCore.getTotalTimeLoggedToday(),
       browser.storage.sync.get({
-        loggingEnabled: config.loggingEnabled,
-        theme: config.theme,
+        loggingEnabled: DEFAULT_CONFIG.loggingEnabled,
+        theme: DEFAULT_CONFIG.theme,
       }),
     ])
 

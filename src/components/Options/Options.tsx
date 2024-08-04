@@ -55,7 +55,7 @@ export const Options = () => {
 
   const restoreSettings = async (): Promise<void> => {
     const items = await browser.storage.sync.get({
-      apiUrl: DEFAULT_CONFIG.apiUrl,
+      apiUrl: getEnv().apiUrl,
       blacklist: '',
       loggingStyle: DEFAULT_CONFIG.loggingStyle,
       loggingType: DEFAULT_CONFIG.loggingType,
