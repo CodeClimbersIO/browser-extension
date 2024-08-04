@@ -19,7 +19,7 @@ describe('codeclimber config', () => {
         "alert": {
           "failure": {
             "text": "There was an error while saving the options!",
-            "type": "danger",
+            "type": "error",
           },
           "success": {
             "text": "Options have been saved!",
