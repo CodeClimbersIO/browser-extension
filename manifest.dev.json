@@ -1,10 +1,13 @@
 {
   "icons": {
-    "128": "public/codeclimbers-128.png"
+    "128": "public/images/codeclimbers-128.png"
   },
   "web_accessible_resources": [
     {
-      "resources": ["codeclimbers-128.png", "codeclimbers-38.png"],
+      "resources": [
+        "images/codeclimbers-128.png",
+        "images/codeclimbers-38.png"
+      ],
       "matches": []
     }
   ]

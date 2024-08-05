@@ -1,29 +1,31 @@
-import type { SummariesPayload } from '@src/types/summaries'
-import { apiRequest } from '@src/utils/apiRequest'
-import { formatDate, getDateUTC } from '@src/utils/dates'
-import { getEnv } from '@src/utils/getEnv'
-import { useBetterQuery } from '.'
+import type { Datum } from "@src/types/summaries";
+import { apiRequest } from "@src/utils/apiRequest";
+import { formatDate, getDateUTC } from "@src/utils/dates";
+import { getEnv } from "@src/utils/getEnv";
+import { useBetterQuery } from ".";
 
 export const useTotalTime = () => {
   const queryFn = async () => {
-    const today = formatDate(getDateUTC())
+    const today = formatDate(getDateUTC());
 
-    const res = await apiRequest<SummariesPayload>({
+    const res = await apiRequest<Datum>({
       url: getEnv().summariesApiEndPoint + `?end=${today}&start=${today}`,
-    })
+    }).catch((e) => {
+      return Promise.reject(
+        new Error(`Error connecting to endpoint - ${e.message} `),
+      );
+    });
 
-    if (!res?.data?.length)
-      return Promise.reject(new Error('Error fetching data'))
+    if (!res?.grand_total)
+      return Promise.reject(new Error("Error retrieving total time"));
 
-    const [{ grand_total: grandTotal }] = res.data
-
-    return grandTotal
-  }
+    return res.grand_total;
+  };
 
   return useBetterQuery({
     queryFn,
-    queryKey: ['TotalTime'],
+    queryKey: ["TotalTime"],
     staleTime: 60,
     throwOnError: false,
-  })
-}
+  });
+};
