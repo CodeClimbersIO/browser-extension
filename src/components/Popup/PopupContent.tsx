@@ -15,13 +15,8 @@ import {
 import { configStore, updateConfig } from "@src/stores/configStore";
 import { useStore } from "@tanstack/react-store";
 import { useTotalTime } from "@src/api/summary.api";
-import { isChrome } from "@src/utils";
 
-const openOptionsPage = async (): Promise<void> => {
-  if (isChrome()) {
-    chrome.runtime.openOptionsPage();
-  }
-
+const openOptionsPage = async () => {
   await browser.runtime.openOptionsPage();
 };
 

@@ -5,15 +5,15 @@
   "homepage_url": "http://localhost:14400",
   "host_permissions": ["http://localhost:14400/*"],
   "icons": {
-    "16": "public/codeclimbers-16.png",
-    "48": "public/codeclimbers-48.png",
-    "128": "public/codeclimbers-128.png"
+    "16": "public/images/codeclimbers-16.png",
+    "48": "public/images/codeclimbers-48.png",
+    "128": "public/images/codeclimbers-128.png"
   },
   "action": {
     "default_popup": "src/routes/popup/index.html",
     "default_title": "Code Climbers",
     "default_icon": {
-      "38": "public/codeclimbers-38.png"
+      "38": "public/images/codeclimbers-38.png"
     }
   },
   "options_ui": {
@@ -34,8 +34,8 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "public/codeclimbers-128.png",
-        "public/codeclimbers-38.png"
+        "public/images/codeclimbers-128.png",
+        "public/images/codeclimbers-38.png"
       ],
       "matches": []
     }

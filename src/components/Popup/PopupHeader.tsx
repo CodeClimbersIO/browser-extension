@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import {
   Menu,
   MenuList,
@@ -8,7 +8,7 @@ import {
   Typography,
   Collapse,
   IconButton,
-} from '@mui/material'
+} from "@mui/material";
 import {
   BugReport,
   Dashboard,
@@ -18,21 +18,21 @@ import {
   Info,
   Settings,
   SettingsInputComponent,
-} from '@mui/icons-material'
-import Grid2 from '@mui/material/Unstable_Grid2/Grid2'
+} from "@mui/icons-material";
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 
-import { CODE_CLIMBER_URL, GITHUB_EXTENSION_URL } from '@src/utils/constants'
+import { CODE_CLIMBER_URL, GITHUB_EXTENSION_URL } from "@src/utils/constants";
 
 export const PopupHeader = () => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [openInfo, setOpenInfo] = useState(false)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [openInfo, setOpenInfo] = useState(false);
 
   const handleClose = () => {
-    setAnchorEl(null)
-    setOpenInfo(false)
-  }
+    setAnchorEl(null);
+    setOpenInfo(false);
+  };
 
-  const open = Boolean(anchorEl)
+  const open = Boolean(anchorEl);
 
   return (
     <nav role="navigation">
@@ -50,16 +50,16 @@ export const PopupHeader = () => {
             href={CODE_CLIMBER_URL}
             rel="noreferrer"
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              textDecoration: 'none',
-              color: 'text.primary',
-              '&:hover': {
-                textDecoration: 'underline',
+              display: "flex",
+              alignItems: "center",
+              textDecoration: "none",
+              color: "text.primary",
+              "&:hover": {
+                textDecoration: "underline",
               },
             }}
           >
-            <img src="codeclimbers-38.png" />
+            <img src="/images/codeclimbers-38.png" />
             Code Climbers
           </Typography>
         </Grid2>
@@ -130,5 +130,5 @@ export const PopupHeader = () => {
         </Collapse>
       </Menu>
     </nav>
-  )
-}
+  );
+};

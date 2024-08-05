@@ -45,7 +45,7 @@ function browserPolyfill() {
 export default defineConfig(() => {
   process.env = {
     ...process.env,
-    API_URL: CODE_CLIMBER_API_URL,
+    API_URL: process.env.API_URL ?? CODE_CLIMBER_API_URL,
     CURRENT_USER_API_URL: "/users/current",
     HEARTBEAT_API_URL: "/users/current/heartbeats",
     SUMMARIES_API_URL: "/users/current/summaries",
