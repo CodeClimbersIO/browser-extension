@@ -90,6 +90,10 @@ class CodeClimbersCore {
         url = document.URL;
       }
 
+      if (!url) {
+        console.error("Invalid Permissions");
+      }
+
       for (const site of SITES.NON_TRACKABLE) {
         if (url.startsWith(site)) {
           // Don't send a heartbeat on sites like 'chrome://newtab/' or 'about:newtab'
@@ -108,7 +112,7 @@ class CodeClimbersCore {
       const project = generateProjectFromDevSites(url);
 
       if (items.loggingStyle == "blacklist") {
-        if (!contains(url, items.blacklist as string)) {
+        if (!contains(url, items.blacklist || ("" as string))) {
           await this.sendHeartbeat(
             {
               hostname: items.hostname as string,
@@ -125,7 +129,10 @@ class CodeClimbersCore {
       }
 
       if (items.loggingStyle == "whitelist") {
-        const heartbeat = this.getHeartbeat(url, items.whitelist as string);
+        const heartbeat = this.getHeartbeat(
+          url,
+          items.whitelist || ("" as string),
+        );
         if (heartbeat.url) {
           await this.sendHeartbeat(
             {
@@ -149,7 +156,7 @@ class CodeClimbersCore {
    * and checks if any element in list is contained in the url.
    * Also checks if element is assigned to a project using @@ as delimiter
    */
-  getHeartbeat(url: string, list: string) {
+  getHeartbeat(url: string, list: string = "") {
     const projectIndicatorCharacters = "@@";
 
     const lines = list.split("\n");

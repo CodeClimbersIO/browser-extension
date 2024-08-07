@@ -23,7 +23,7 @@
     "service_worker": "src/routes/background/background.ts",
     "type": "module"
   },
-  "permissions": ["alarms", "tabs", "storage", "idle"],
+  "permissions": ["idle", "storage", "alarms", "activeTab"],
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*", "<all_urls>"],
