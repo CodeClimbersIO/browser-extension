@@ -20,6 +20,7 @@ export const SITES = {
     "stackoverflow.com",
     "udemy.com",
     "w3schools.com",
+    "http://localhost:",
   ],
   DESIGN: [
     "figma.com",
