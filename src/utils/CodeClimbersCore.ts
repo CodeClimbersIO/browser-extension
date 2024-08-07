@@ -279,7 +279,7 @@ class CodeClimbersCore {
     }
     const payload: Record<string, unknown> = {
       entity: heartbeat.url,
-      time: new Date().toISOString(),
+      time: Math.floor(new Date().getTime() / 1000), // UNIX TIMESTAMP
       type: type,
       user_agent: `${userAgent} ${os} ${browserName}-code_climbers/${getEnv().version}`,
     };
