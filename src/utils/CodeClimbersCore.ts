@@ -6,7 +6,12 @@ import type { Tabs } from "webextension-polyfill";
 import browser from "webextension-polyfill";
 import { DEFAULT_CONFIG, IDLE_DETECTION_INTERVAL, SITES } from "./constants";
 import type { SendHeartbeat } from "@src/types/heartbeats";
-import { IS_FIREFOX, IS_EDGE, generateProjectFromDevSites } from "@src/utils";
+import {
+  IS_FIREFOX,
+  IS_EDGE,
+  generateProjectFromDevSites,
+  getCategoryFromUrl,
+} from "@src/utils";
 import contains from "@src/utils/contains";
 import getDomainFromUrl, { getDomain } from "@src/utils/getDomainFromUrl";
 import { getEnv } from "@src/utils/getEnv";
@@ -229,26 +234,25 @@ class CodeClimbersCore {
     heartbeat: SendHeartbeat,
     navigationPayload: Record<string, unknown>,
   ): Promise<void> {
-    let payload;
-
+    const category = getCategoryFromUrl(heartbeat.url);
     const loggingType = await this.getLoggingType();
     // Get only the domain from the entity.
     // And send that in heartbeat
-    //
+
     if (loggingType == "domain") {
       heartbeat.url = getDomainFromUrl(heartbeat.url);
-      payload = await this.preparePayload(heartbeat, "domain");
+      const payload = await this.preparePayload(heartbeat, "domain");
       console.log({ payload, navigationPayload });
       await this.sendPostRequestToApi(
-        { ...payload, ...navigationPayload },
+        { category, ...payload, ...navigationPayload },
         heartbeat.hostname,
       );
     }
     // Send entity in heartbeat
     else if (loggingType == "url") {
-      payload = await this.preparePayload(heartbeat, "url");
+      const payload = await this.preparePayload(heartbeat, "url");
       await this.sendPostRequestToApi(
-        { ...payload, ...navigationPayload },
+        { category, ...payload, ...navigationPayload },
         heartbeat.hostname,
       );
     }
