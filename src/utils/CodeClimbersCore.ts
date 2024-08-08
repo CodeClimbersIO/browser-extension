@@ -293,6 +293,8 @@ class CodeClimbersCore {
       time: Math.floor(new Date().getTime() / 1000), // UNIX TIMESTAMP
       type: type,
       user_agent: `${userAgent} ${os} ${browserName}-code_climbers/${getEnv().version}`,
+      machine: this.getMachine(),
+      operatingSystem: os,
     };
 
     payload.project = heartbeat.project ?? "<<LAST_PROJECT>>";
@@ -307,6 +309,88 @@ class CodeClimbersCore {
         resolve(`${info.os}_${info.arch}`);
       });
     });
+  }
+
+  getMachine() {
+    let os = "Unknown";
+    let osVersion = "Unknown";
+    let architecture = "Unknown";
+
+    const { userAgent } = navigator;
+
+    if (userAgent.includes("Mac OS X")) {
+      os = "macOS";
+      const macOSMatch = userAgent.match(/Mac OS X (\d+[._]\d+[._]\d+)/);
+      if (macOSMatch) {
+        osVersion = macOSMatch[1].replace(/_/g, ".");
+      }
+      if (userAgent.includes("Intel")) {
+        architecture = "Intel";
+      } else if (userAgent.includes("ARM")) {
+        architecture = "ARM";
+      }
+    } else if (userAgent.includes("Windows")) {
+      os = "Windows";
+      const windowsMatch = userAgent.match(/Windows NT (\d+\.\d+)/);
+      if (windowsMatch) {
+        const versionMap = {
+          "10.0": "10",
+          "6.3": "8.1",
+          "6.2": "8",
+          "6.1": "7",
+          "6.0": "Vista",
+          "5.2": "XP 64-Bit",
+          "5.1": "XP",
+        };
+        const ntVersion = windowsMatch[1] as keyof typeof versionMap;
+        osVersion = ntVersion in versionMap ? versionMap[ntVersion] : ntVersion;
+      }
+      if (userAgent.includes("Win64") || userAgent.includes("x64")) {
+        architecture = "x64";
+      } else {
+        architecture = "x86";
+      }
+    } else if (userAgent.includes("Linux")) {
+      os = "Linux";
+      if (userAgent.includes("x86_64") || userAgent.includes("x64")) {
+        architecture = "x64";
+      } else if (userAgent.includes("i686") || userAgent.includes("i386")) {
+        architecture = "x86";
+      } else if (userAgent.includes("arm")) {
+        architecture = "ARM";
+      }
+
+      // Try to detect specific distributions
+      if (userAgent.includes("Ubuntu")) {
+        os += " (Ubuntu)";
+      } else if (userAgent.includes("Fedora")) {
+        os += " (Fedora)";
+      } else if (userAgent.includes("Red Hat")) {
+        os += " (Red Hat)";
+      }
+    }
+    // Android (technically Linux, but often treated separately)
+    else if (userAgent.includes("Android")) {
+      os = "Android";
+      const androidMatch = userAgent.match(/Android (\d+(\.\d+)?)/);
+      if (androidMatch) {
+        osVersion = androidMatch[1];
+      }
+      if (userAgent.includes("arm")) {
+        architecture = "ARM";
+      }
+    }
+    // iOS
+    else if (/iPhone|iPad|iPod/.test(userAgent)) {
+      os = "iOS";
+      const iosMatch = userAgent.match(/OS (\d+[._]\d+[._]?\d*)/);
+      if (iosMatch) {
+        osVersion = iosMatch[1].replace(/_/g, ".");
+      }
+      architecture = "ARM";
+    }
+
+    return `${os}; ${architecture}; Version ${osVersion}`;
   }
 
   /**
