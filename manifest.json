@@ -23,19 +23,6 @@
     "type": "module"
   },
   "permissions": ["idle", "storage", "alarms", "tabs"],
-  "content_scripts": [
-    {
-      "matches": [
-        "http://localhost/*",
-        "https://figma.com/*",
-        "https://*.figma.com/*",
-        "https://canva.com/*",
-        "https://*.canvas.com/*"
-      ],
-      "js": ["src/routes/content/content.ts"],
-      "run_at": "document_end"
-    }
-  ],
   "web_accessible_resources": [
     {
       "resources": [
