@@ -20,6 +20,7 @@ class CodeClimbersCore {
   tabsWithDevtoolsOpen: Tabs.Tab[];
   db: IDBPDatabase | undefined;
   state: string;
+  sentHeartbeats: Set<string> = new Set();
 
   constructor() {
     this.tabsWithDevtoolsOpen = [];
@@ -236,8 +237,24 @@ class CodeClimbersCore {
   ): Promise<void> {
     const category = getCategoryFromUrl(heartbeat.url);
     const loggingType = await this.getLoggingType();
-    // Get only the domain from the entity.
-    // And send that in heartbeat
+
+    // Sometimes the websites can fire off multiple navigation events
+    // in a short period of time. This will prevent multiple heartbeats
+    // from being sent to the server for the exact same navigation event.
+    const key = `${heartbeat.url}-${navigationPayload.time}`;
+
+    const alreadySent = this.sentHeartbeats.has(key);
+    if (alreadySent) {
+      return;
+    }
+
+    this.sentHeartbeats.add(key);
+
+    // Remove the key from the set after 1 second to prevent a huge
+    // set if the user never closes their browser
+    setTimeout(() => {
+      this.sentHeartbeats.delete(key);
+    }, 1_000);
 
     if (loggingType == "domain") {
       heartbeat.url = getDomainFromUrl(heartbeat.url);
