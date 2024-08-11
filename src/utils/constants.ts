@@ -44,6 +44,13 @@ export const SITES = {
     "hackernews.com",
     "x.com",
   ],
+  COMMUNICATION: [
+    "gmail.com",
+    "slack.com",
+    "discord.com",
+    "zoom.us",
+    "teams.microsoft.com",
+  ],
   GITHUB: [
     "https://github.com/",
     "https://gist.github.com/",

@@ -35,16 +35,20 @@ export const getCategoryFromUrl = (
   url: string,
 ): CodeClimbers.Core["category"] => {
   if (SITES.DEV.some((site) => url.includes(site))) {
-    return "development";
+    return "coding";
   }
 
   if (SITES.DESIGN.some((site) => url.includes(site))) {
-    return "design";
+    return "designing";
   }
 
   if (SITES.SOCIAL_MEDIA.some((site) => url.includes(site))) {
-    return "socialMedia";
+    return "browsing";
   }
 
-  return "unknown";
+  if (SITES.COMMUNICATION.some((site) => url.includes(site))) {
+    return "communication";
+  }
+
+  return "browsing";
 };

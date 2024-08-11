@@ -2,7 +2,7 @@ export namespace CodeClimbers {
   export interface Core {
     version: `${number}.${number}.${number}`;
     supportedBrowser: "edge" | "firefox" | "chrome";
-    category: "design" | "development" | "unknown" | "socialMedia";
+    category: "coding" | "designing" | "browsing" | "communication";
   }
 
   export interface Logging {
