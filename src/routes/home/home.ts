@@ -7,5 +7,5 @@ fetch("http://localhost:14400")
 })
 .catch((error) => {
   console.log("Server is not running on localhost");
-  window.location.href = "https://codeclimbers.io";
+  window.location.href = "https://codeclimbers.io/install";
 });
