@@ -22,6 +22,9 @@
     "service_worker": "src/routes/background/background.ts",
     "type": "module"
   },
+  "chrome_url_overrides": {
+    "newtab": "src/routes/home/index.html"
+  },
   "permissions": ["idle", "storage", "alarms", "tabs"],
   "web_accessible_resources": [
     {
