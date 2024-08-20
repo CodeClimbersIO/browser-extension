@@ -1,7 +1,7 @@
 {
   "name": "codeclimbers-extension",
   "productName": "Code Climbers Browser Extension",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "Browser Extensions for Code Climbers",
   "type": "module",
   "scripts": {
