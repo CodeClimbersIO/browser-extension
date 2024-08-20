@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Code Climbers",
-  "description": "Code Climbers helps you track time spent on coding and improve your productivity.",
+  "name": "CodeClimbers | The homepage for time tracking",
+  "description": "Track the time you spend coding and improve productivity. Private, local, and open source!",
   "homepage_url": "https://codeclimbers.io/",
   "icons": {
     "16": "public/images/codeclimbers-16.png",
@@ -10,7 +10,7 @@
   },
   "action": {
     "default_popup": "src/routes/popup/index.html",
-    "default_title": "Code Climbers",
+    "default_title": "CodeClimbers | The homepage for time tracking",
     "default_icon": {
       "38": "public/images/codeclimbers-38.png"
     }
