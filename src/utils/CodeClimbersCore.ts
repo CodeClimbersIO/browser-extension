@@ -1,20 +1,20 @@
 /* eslint-disable no-fallthrough */
 /* eslint-disable default-case */
-import type { IDBPDatabase } from "idb";
-import { openDB } from "idb";
-import type { Tabs } from "webextension-polyfill";
-import browser from "webextension-polyfill";
-import { DEFAULT_CONFIG, IDLE_DETECTION_INTERVAL, SITES } from "./constants";
 import type { SendHeartbeat } from "@src/types/heartbeats";
 import {
-  IS_FIREFOX,
   IS_EDGE,
+  IS_FIREFOX,
   generateProjectFromDevSites,
   getCategoryFromUrl,
 } from "@src/utils";
 import contains from "@src/utils/contains";
 import getDomainFromUrl, { getDomain } from "@src/utils/getDomainFromUrl";
 import { getEnv } from "@src/utils/getEnv";
+import type { IDBPDatabase } from "idb";
+import { openDB } from "idb";
+import type { Tabs } from "webextension-polyfill";
+import browser from "webextension-polyfill";
+import { DEFAULT_CONFIG, IDLE_DETECTION_INTERVAL, SITES } from "./constants";
 
 class CodeClimbersCore {
   tabsWithDevtoolsOpen: Tabs.Tab[];
@@ -58,7 +58,7 @@ class CodeClimbersCore {
 
   /**
    * Depending on various factors detects the current active tab URL or domain,
-   * and sends it to Code Climbers for logging.
+   * and sends it to CodeClimbers for logging.
    */
   async recordHeartbeat(payload = {}): Promise<void> {
     const items = await browser.storage.sync.get({
@@ -98,6 +98,7 @@ class CodeClimbersCore {
 
       if (!url) {
         console.error("Invalid Permissions");
+        return;
       }
 
       for (const site of SITES.NON_TRACKABLE) {
@@ -455,7 +456,7 @@ class CodeClimbersCore {
   }
 
   /**
-   * Sends cached heartbeats request to code climbers api
+   * Sends cached heartbeats request to codeclimbers api
    */
   async sendCachedHeartbeatsRequest(): Promise<void> {
     if (this.db) {

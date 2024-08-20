@@ -1,7 +1,8 @@
 node_modules
-dist
+dist*
 
 .env
 .DS_Store
 
+#Jetbrains
 .idea
