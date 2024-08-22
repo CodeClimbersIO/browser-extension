@@ -42,12 +42,12 @@ export const getCategoryFromUrl = (
     return "designing";
   }
 
-  if (SITES.SOCIAL_MEDIA.some((site) => url.includes(site))) {
-    return "browsing";
-  }
-
   if (SITES.COMMUNICATION.some((site) => url.includes(site))) {
     return "communication";
+  }
+
+  if (SITES.SOCIAL_MEDIA.some((site) => url.includes(site))) {
+    return "browsing";
   }
 
   return "browsing";
