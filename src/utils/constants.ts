@@ -29,7 +29,8 @@ export const SITES = {
     "squarespace.com",
     "webflow.com",
   ],
-  NON_TRACKABLE: ["chrome://", "about:"],
+  // Sometimes the chrome settings pages come back as a //undefined url
+  NON_TRACKABLE: ["chrome://", "about:", "//undefined"],
   SOCIAL_MEDIA: [
     "facebook.com",
     "instagram.com",
