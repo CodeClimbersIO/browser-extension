@@ -45,6 +45,7 @@ export const SITES = {
     "x.com",
   ],
   COMMUNICATION: [
+    "mail.",
     "gmail.com",
     "slack.com",
     "discord.com",
