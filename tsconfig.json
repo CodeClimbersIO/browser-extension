@@ -9,14 +9,13 @@
     "allowJs": false,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
+    "moduleResolution": "NodeNext",
     "moduleDetection": "force",
     "resolveJsonModule": true,
     "target": "es5",
     "allowSyntheticDefaultImports": true,
     "jsx": "react",
     "outDir": "lib",
-    "importsNotUsedAsValues": "error",
     "baseUrl": "./",
     "paths": {
       "@src/*": ["./src/*"]

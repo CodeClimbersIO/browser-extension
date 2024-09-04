@@ -1,13 +1,13 @@
+import { crx, type ManifestV3Export } from "@crxjs/vite-plugin";
 import react from "@vitejs/plugin-react";
 import { resolve } from "path";
 import { defineConfig } from "vite";
-import { crx, type ManifestV3Export } from "@crxjs/vite-plugin";
 import { CODE_CLIMBER_API_URL } from "./src/utils/constants";
 
-import manifest from "./manifest.json";
-import devManifest from "./manifest.dev.json";
-import pkg from "./package.json";
 import fs from "fs";
+import devManifest from "./manifest.dev.json";
+import manifest from "./manifest.json";
+import pkg from "./package.json";
 
 const root = resolve(__dirname, "src");
 const outDir = resolve(__dirname, "dist");
@@ -19,12 +19,26 @@ const browserPolyfillLocation = resolve(
 
 const IS_DEV = process.env.__DEV__ === "true";
 
-const extensionManifest = {
-  ...manifest,
-  ...(IS_DEV ? devManifest : {}),
-  name: IS_DEV ? `DEV: ${manifest.name}` : manifest.name,
-  version: pkg.version,
-} as ManifestV3Export;
+const createManifest = (browser: 'chrome' | 'firefox'): ManifestV3Export => {
+  const baseManifest = {
+    ...manifest,
+    ...(IS_DEV ? devManifest : {}),
+    name: IS_DEV ? `DEV: ${manifest.name}` : manifest.name,
+    version: pkg.version,
+  };
+
+  if (browser === 'firefox') {
+    // Firefox-specific adjustments
+    const { service_worker, ...rest } = baseManifest.background;
+    baseManifest.background = {
+      ...rest,
+      service_worker: 'src/routes/background/background.ts',
+      type: 'module'
+    };
+  }
+
+  return baseManifest as ManifestV3Export;
+};
 
 function browserPolyfill() {
   return {
@@ -36,13 +50,13 @@ function browserPolyfill() {
       fs.copyFile(
         browserPolyfillLocation,
         resolve(root, "browser-polyfill.js"),
-        () => console.log(`Deleted dev-icon-32.png frm prod build`),
+        () => console.log(`Copied browser-polyfill.js to src directory`),
       );
     },
   };
 }
 
-export default defineConfig(() => {
+export default defineConfig(({ mode, ...rest }) => {
   process.env = {
     ...process.env,
     API_URL: process.env.API_URL ?? CODE_CLIMBER_API_URL,
@@ -51,6 +65,8 @@ export default defineConfig(() => {
     SUMMARIES_API_URL: "/users/current/summaries",
     NODE_ENV: process.env.__DEV__ !== "true" ? "production" : "development",
   };
+  const buildTarget = process.env.BUILD_TARGET;
+
   return {
     resolve: {
       alias: {
@@ -60,13 +76,13 @@ export default defineConfig(() => {
     plugins: [
       react(),
       crx({
-        manifest: extensionManifest,
+        manifest: createManifest(buildTarget as 'chrome' | 'firefox'),
       }),
       browserPolyfill(),
     ],
     publicDir,
     build: {
-      outDir,
+      outDir: resolve(outDir, buildTarget as 'chrome' | 'firefox'),
       sourcemap: IS_DEV,
       emptyOutDir: !IS_DEV,
     },

@@ -5,7 +5,9 @@
   "description": "Browser Extensions for CodeClimbers",
   "type": "module",
   "scripts": {
-    "build": "vite build",
+    "build:chrome": "BUILD_TARGET=chrome vite build",
+    "build:firefox": "BUILD_TARGET=firefox vite build",
+    "build": "npm run build:chrome && npm run build:firefox",
     "dev": "nodemon",
     "browsers": "node ./browsers.js",
     "lint": "eslint --ext .ts,.tsx,.js --fix ."
