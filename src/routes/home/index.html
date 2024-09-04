@@ -3,12 +3,49 @@
   <head>
     <meta charset="UTF-8" />
     <title>Home</title>
-    <link rel="stylesheet" href="./home.css" />
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+      #iframe-container {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+    </style>
   </head>
-
   <body>
-    <div id="#__root"></div>
+    <iframe id="iframe-container" title="CodeClimbers.io"></iframe>
     <script type="module" src="../../browser-polyfill.js"></script>
-    <script type="module" src="./home.ts"></script>
+    <script type="module">
+      const iframe = document.getElementById('iframe-container');
+
+      function loadIframe(url) {
+        iframe.src = url + '?newTab=true';
+      }
+
+      // Check if server is running on localhost
+      fetch("http://localhost:14400", { method: 'HEAD' })
+        .then((response) => {
+          if (response.ok) {
+            loadIframe("http://localhost:14400");
+          } else {
+            throw new Error('Local server not available');
+          }
+        })
+        .catch((error) => {
+          console.log("Server is not running on localhost, loading production URL");
+          loadIframe("https://codeclimbers.io/install");
+        });
+
+      // Attempt to focus the address bar
+      window.addEventListener('load', () => {
+        window.focus();
+        if (document.activeElement !== document.body) document.body.focus();
+      });
+    </script>
   </body>
 </html>
