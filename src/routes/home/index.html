@@ -26,19 +26,18 @@
       function loadIframe(url) {
         iframe.src = url + '?newTab=true';
       }
-
       // Check if server is running on localhost
       fetch("http://localhost:14400", { method: 'HEAD' })
         .then((response) => {
           if (response.ok) {
-            loadIframe("http://localhost:14400");
+            loadIframe("https://local.codeclimbers.io");
           } else {
             throw new Error('Local server not available');
           }
         })
         .catch((error) => {
           console.log("Server is not running on localhost, loading production URL");
-          loadIframe("https://codeclimbers.io/install");
+          loadIframe("https://local.codeclimbers.io/install");
         });
 
       // Attempt to focus the address bar
