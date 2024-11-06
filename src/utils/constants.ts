@@ -21,6 +21,7 @@ export const SITES = {
     "udemy.com",
     "w3schools.com",
     "http://localhost:",
+    "script.google.com",
   ],
   DESIGN: [
     "figma.com",
