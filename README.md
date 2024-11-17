@@ -1,5 +1,7 @@
 # Code Climbers Browser Extension
 
+This is a fork of the Wakatime plugin for Jetbrains [here](https://github.com/wakatime/jetbrains-wakatime).
+
 Automatic time tracking for stats about your website debugging, research, documentation, etc.
 
 ## Features
