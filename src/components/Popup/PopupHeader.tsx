@@ -1,14 +1,3 @@
-import React, { useState } from "react";
-import {
-  Menu,
-  MenuList,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-  Collapse,
-  IconButton,
-} from "@mui/material";
 import {
   BugReport,
   Dashboard,
@@ -16,10 +5,20 @@ import {
   ExpandMore,
   GitHub,
   Info,
-  Settings,
-  SettingsInputComponent,
+  Settings
 } from "@mui/icons-material";
+import {
+  Collapse,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  MenuList,
+  Typography,
+} from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
+import React, { useState } from "react";
 
 import { CODE_CLIMBER_URL, GITHUB_EXTENSION_URL } from "@src/utils/constants";
 
@@ -76,18 +75,7 @@ export const PopupHeader = () => {
         <MenuItem
           component="a"
           target="_blank"
-          href={`${CODE_CLIMBER_URL}/settings/rules`}
-          rel="noreferrer"
-        >
-          <ListItemIcon>
-            <SettingsInputComponent />
-          </ListItemIcon>
-          <ListItemText primary="Custom Rules" />
-        </MenuItem>
-        <MenuItem
-          component="a"
-          target="_blank"
-          href={`${CODE_CLIMBER_URL}/dashboard`}
+          href={`${CODE_CLIMBER_URL}`}
           rel="noreferrer"
         >
           <ListItemIcon>

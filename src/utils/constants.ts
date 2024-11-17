@@ -1,6 +1,6 @@
 import type { CodeClimbers } from "@src/types/codeclimbers";
 
-export const CODE_CLIMBER_URL = "http://localhost:14400" as const;
+export const CODE_CLIMBER_URL = "https://local.codeclimbers.io" as const;
 export const CODE_CLIMBER_API_URL =
   `${CODE_CLIMBER_URL}/api/v1/wakatime` as const;
 export const GITHUB_EXTENSION_URL =

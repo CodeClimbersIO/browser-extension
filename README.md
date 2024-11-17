@@ -20,11 +20,11 @@ Automatic time tracking for stats about your website debugging, research, docume
 
 [![Edge](https://wakatime.com/static/img/microsoft-extension.png)](https://microsoftedge.microsoft.com/addons/detail/wakatime/cdnpfnaadjmaplhghnlonephmabegadl)
 
-2. Add the [source](http://localhost:14400).
+2. Add the [source](https://local.codeclimbers.io).
 
 3. Use Chrome like you normally do and your time will be tracked for you automatically.
 
-4. Visit [your dashboard](http://localhost:14400) to see your logged time.
+4. Visit [your dashboard](https://local.codeclimbers.io) to see your logged time.
 
 ## Contributing 🚀
 
